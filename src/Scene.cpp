@@ -24,11 +24,17 @@ void Scene::updateAll(float elapsedTime) {
         background->update(elapsedTime);
     }
 
+    physics.Step(elapsedTime, velocityIterations, positionIterations);
     for(auto& element : elements) {
         element->update(elapsedTime);
     }
 }
 
 void Scene::addElement(unique_ptr<SceneElement>&& element) {
+    element->onAddition(*this);
     elements.push_back(move(element));
+}
+
+b2World& Scene::getPhysicsWorld() {
+    return physics;
 }

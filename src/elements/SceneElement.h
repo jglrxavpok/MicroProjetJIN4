@@ -4,6 +4,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+class Scene;
+
 class SceneElement {
 protected:
     sf::Vector2f position;
@@ -11,6 +13,7 @@ protected:
 public:
     explicit SceneElement() = default;
 
+    virtual void onAddition(Scene& scene) {};
     virtual void update(float elapsedTime) = 0;
     virtual void render(sf::RenderWindow& target, float partialTick) = 0;
     virtual ~SceneElement() = default;

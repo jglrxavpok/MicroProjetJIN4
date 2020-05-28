@@ -42,4 +42,6 @@ add_subdirectory(mainLauncher)
 add_subdirectory(src)
 add_subdirectory(unitTests)
 add_subdirectory(imgui-sfml)
+
+set(TMXLITE_STATIC_LIB true)
 add_subdirectory(tmxlite)

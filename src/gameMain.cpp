@@ -12,7 +12,7 @@ constexpr int WIDTH = 1600;
 constexpr int HEIGHT = 900;
 
 /// 60Hz
-constexpr float TARGET_UPDATE_PERIOD = 1000.0/60.0;
+constexpr float TARGET_UPDATE_PERIOD = 1.0/60.0;
 /// On essaie pas de rattrapper plus de 10 frames
 constexpr int MAX_CATCHUP_ATTEMPTS = 10;
 

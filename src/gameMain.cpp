@@ -6,13 +6,12 @@
 #include <box2d/b2_body.h>
 
 using namespace std;
+using namespace Game;
 
 // TODO: configuration pour la résolution
 constexpr int WIDTH = 1600;
 constexpr int HEIGHT = 900;
 
-/// 60Hz
-constexpr float TARGET_UPDATE_PERIOD = 1.0/60.0;
 /// On essaie pas de rattrapper plus de 10 frames
 constexpr int MAX_CATCHUP_ATTEMPTS = 10;
 
@@ -32,6 +31,8 @@ int gameMain()
 
     sf::Clock deltaClock;
     float lag = 0.0; // in ms
+
+    init();
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

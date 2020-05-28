@@ -9,13 +9,15 @@
 
 class BoatElement: public SceneElement {
 private:
+    /// en radians
+    float angle = 0.0f;
     constexpr static float pixelWidth = 80.0f;
     constexpr static float pixelLength = 200.0f;
     sf::RectangleShape squarePart{sf::Vector2f{pixelLength, pixelWidth}};
     sf::CircleShape pointyPart{pixelWidth/2.0f, 3};
 
     /// pointeur nu car Box2D gère toute la mémoire par lui-même et que le destructeur de b2Body est privé
-    b2Body* rigidbody = nullptr;
+    b2Body* rigidbody = nullptr; // TODO: trouver comment nettoyer quand on en a plus besoin
 
 public:
     explicit BoatElement();

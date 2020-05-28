@@ -19,7 +19,7 @@ private:
 
     unique_ptr<SceneElement> background = nullptr;
     vector<unique_ptr<SceneElement>> elements;
-    b2World physics{ b2Vec2_zero /* aucune gravité pour nous, on a une vue du dessus */ };
+    b2World physics{ b2Vec2(100.0f, 0.0f) /* aucune gravité pour nous, on a une vue du dessus */ };
 
 public:
     explicit Scene(unique_ptr<SceneElement> background);

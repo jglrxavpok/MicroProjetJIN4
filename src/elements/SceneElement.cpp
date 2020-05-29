@@ -3,3 +3,7 @@
 //
 
 #include "SceneElement.h"
+
+sf::Vector2f& SceneElement::getPosition() {
+    return position;
+}

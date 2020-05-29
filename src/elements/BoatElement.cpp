@@ -17,13 +17,13 @@ BoatElement::BoatElement(): SceneElement() {
     squarePart.setOrigin(pixelLength/2.0f, pixelWidth/2.0f);
 }
 
-// FIXME: tmp
-b2Body* rigidbody2;
-
 void BoatElement::onAddition(Scene &scene) {
+    this->scene = &scene; // permet de garder une référence à la scène pour changer la vue de rendu
+
     b2BodyDef bodyDef; // bodyDef n'est utilisé que pendant la construction du b2Body, donc on peut le mettre sur le stack
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(200.0f, 400.0f);
+    bodyDef.angularDamping = angularDamping;
+    bodyDef.position.Set(200.0f, 450.0f);
     rigidbody = scene.getPhysicsWorld().CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
@@ -33,7 +33,7 @@ void BoatElement::onAddition(Scene &scene) {
     // fixture pour l'arrière de la barque
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 100.0f;
+    fixtureDef.density = 1000.0f;
     fixtureDef.friction = 0.0f;
     rigidbody->CreateFixture(&fixtureDef);
 
@@ -46,37 +46,37 @@ void BoatElement::onAddition(Scene &scene) {
     triangle.Set(points.data(), points.size());
 
     fixtureDef.shape = &triangle;
-    fixtureDef.density = 100.0f;
+    fixtureDef.density = 10.0f;
     fixtureDef.friction = 0.0f;
     rigidbody->CreateFixture(&fixtureDef);
-
-    // FIXME: anything below this line is purely for testing purposes
-    bodyDef.type = b2_kinematicBody;
-    bodyDef.angularVelocity = 0.0f;
-    bodyDef.angle = -M_PI/2.5f;
-    bodyDef.position.Set(1000.0f, 400.0f);
-    bodyDef.linearVelocity.x = -200.0f;
-    rigidbody2 = scene.getPhysicsWorld().CreateBody(&bodyDef);
-
-    b2PolygonShape line;
-    line.SetAsBox(100.0f, 10.0f);
-
-    fixtureDef.shape = &line;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.0f;
-    rigidbody2->CreateFixture(&fixtureDef);
 }
 
 void BoatElement::update(float elapsedTime) {
+    if(scene) {
+        sf::View& renderView = scene->getRenderView();
+        if(auto& background = scene->getBackground()) {
+            background->getPosition().x = position.x;
+        }
+        renderView.setCenter(position.x+renderView.getSize().x/2.0f-200.0f, renderView.getSize().y/2.0f);
+    }
+
     static float time = 0.0f;
     time += elapsedTime;
 
-    auto transform = rigidbody->GetTransform();
-    transform.p.x = 200.0f;
-    rigidbody->SetTransform(transform.p, transform.q.GetAngle());
-    position.x = transform.p.x;
-    position.y = transform.p.y;
-    angle = transform.q.GetAngle();
+    if(rigidbody) {
+        b2Vec2 impulse;
+        float f = linearImpulseFactor * rigidbody->GetMass();
+        impulse.x = cos(angle) * f;
+        impulse.y = sin(angle) * f;
+        rigidbody->ApplyLinearImpulseToCenter(impulse, true);
+
+        rigidbody->ApplyAngularImpulse(-angularImpulseFactor*rigidbody->GetInertia() * rigidbody->GetAngle(), true);
+
+        auto transform = rigidbody->GetTransform();
+        position.x = transform.p.x;
+        position.y = transform.p.y;
+        angle = transform.q.GetAngle();
+    }
 }
 
 void BoatElement::render(sf::RenderWindow &target, float partialTick) {
@@ -94,14 +94,4 @@ void BoatElement::render(sf::RenderWindow &target, float partialTick) {
 
     target.draw(squarePart);
     target.draw(pointyPart);
-
-    // FIXME: tmp
-    if(rigidbody2) {
-        auto s = sf::RectangleShape(sf::Vector2f(200.0f, 20.0f));
-        s.setOrigin(100.0f, 10.0f);
-        s.setRotation(rigidbody2->GetAngle()*180.0f/M_PI);
-        s.setPosition(rigidbody2->GetPosition().x, rigidbody2->GetPosition().y);
-        s.setFillColor(sf::Color::Black);
-        target.draw(s);
-    }
 }

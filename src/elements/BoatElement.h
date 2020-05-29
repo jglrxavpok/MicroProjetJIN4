@@ -6,6 +6,7 @@
 #include "SceneElement.h"
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
+#include <memory>
 
 class BoatElement: public SceneElement {
 private:
@@ -18,6 +19,20 @@ private:
 
     /// pointeur nu car Box2D gère toute la mémoire par lui-même et que le destructeur de b2Body est privé
     b2Body* rigidbody = nullptr; // TODO: trouver comment nettoyer quand on en a plus besoin
+
+    /// on peut se permettre un pointeur nu car l'élément a une durée de vie plus courte que la Scene.
+    /// De plus, utiliser un weak_ptr impose que Scene soit possédé dans un shared_ptr, ce qui n'est pas le cas,
+    /// une Scene étant supposée possédée uniquement dans la namespace Game
+    Scene* scene = nullptr;
+
+    /// contrôle l'intensité appliquée à l'impulsion pour redresser le bateau
+    float angularImpulseFactor = 0.05f;
+
+    /// contrôle l'intensité appliquée à l'impulsion pour faire avancer le bateau
+    float linearImpulseFactor = 10.0f;
+
+    /// contrôle la réduction de vitesse de rotation
+    float angularDamping = 0.75f;
 
 public:
     explicit BoatElement();

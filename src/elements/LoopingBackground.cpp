@@ -3,6 +3,7 @@
 //
 #include <memory>
 #include <iostream>
+#include <cmath>
 #include "LoopingBackground.h"
 
 LoopingBackground::LoopingBackground(std::shared_ptr<sf::Texture> texture): texture(texture) {
@@ -11,10 +12,7 @@ LoopingBackground::LoopingBackground(std::shared_ptr<sf::Texture> texture): text
 }
 
 void LoopingBackground::update(float elapsedTime) {
-    scrollX += elapsedTime * SCROLL_SPEED;
-    while(scrollX >= 1.0f) {
-        scrollX -= 1.0f;
-    }
+
 }
 
 /// Met à jour la taille du sprite pour correspondre à la taille de la fenêtre
@@ -28,9 +26,12 @@ void LoopingBackground::render(sf::RenderWindow &target, float partialTick) {
     updateScale(target, spriteLeft);
     updateScale(target, spriteRight);
 
+
     unsigned int screenWidth = target.getSize().x;
-    spriteLeft.setPosition(-scrollX*screenWidth, 0);
-    spriteRight.setPosition((1.0f-scrollX)*screenWidth, 0);
+    position.x = fmodf(position.x, screenWidth);
+
+    spriteLeft.setPosition(-position.x, 0);
+    spriteRight.setPosition((screenWidth-position.x), 0);
 
     target.draw(spriteLeft);
     target.draw(spriteRight);

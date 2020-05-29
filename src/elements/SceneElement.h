@@ -17,4 +17,6 @@ public:
     virtual void update(float elapsedTime) = 0;
     virtual void render(sf::RenderWindow& target, float partialTick) = 0;
     virtual ~SceneElement() = default;
+
+    sf::Vector2f& getPosition();
 };

@@ -22,7 +22,7 @@ std::shared_ptr<sf::Texture> Game::loadTexture(std::string path) {
 }
 
 Game::Game(sf::RenderWindow& window): renderTarget(window) {
-    unique_ptr<SceneElement> background = make_unique<LoopingBackground>(loadTexture("resources/boat_background.png"));
+    unique_ptr<SceneElement> background = make_unique<LoopingBackground>(loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
 
     scene->addElement(make_unique<ShoreElement>(0.0f));

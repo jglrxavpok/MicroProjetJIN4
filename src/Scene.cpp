@@ -30,9 +30,11 @@ void Scene::updateAll(float elapsedTime) {
     }
 
     physics.Step(elapsedTime, velocityIterations, positionIterations);
+
     for(auto& element : elements) {
         element->update(elapsedTime);
     }
+    elements.erase(remove_if(elements.begin(), elements.end(), [](const auto& elem) { return elem->shouldBeRemoved(); }), elements.end());
 }
 
 void Scene::addElement(unique_ptr<SceneElement>&& element) {

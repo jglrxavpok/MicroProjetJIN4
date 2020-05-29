@@ -7,6 +7,9 @@
 class Scene;
 
 class SceneElement {
+private:
+    bool remove = false;
+
 protected:
     sf::Vector2f position;
 
@@ -17,6 +20,9 @@ public:
     virtual void update(float elapsedTime) = 0;
     virtual void render(sf::RenderWindow& target, float partialTick) = 0;
     virtual ~SceneElement() = default;
+
+    void scheduleForRemoval();
+    bool shouldBeRemoved();
 
     sf::Vector2f& getPosition();
 };

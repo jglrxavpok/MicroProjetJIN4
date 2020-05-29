@@ -4,8 +4,8 @@ cmake_policy(VERSION 3.15)
 include(FetchContent)
 project(MicroProjetJIN4 VERSION 1.0.0 LANGUAGES CXX)
 
+set(ARCH "x64")
 set (BUILD_SHARED_LIBS FALSE)
-
 
 # pugixml
 FetchContent_Declare(

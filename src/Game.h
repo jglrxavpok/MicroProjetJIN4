@@ -4,13 +4,21 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "Scene.h"
 
-namespace Game {
+class Game {
+private:
+    std::unique_ptr<Scene> scene = nullptr;
+    int mousePosX;
+    int mousePosY;
+    bool buttonPressed[sf::Mouse::ButtonCount];
+    sf::RenderWindow& renderTarget;
+
+public:
     /// 60Hz
-    constexpr float TARGET_UPDATE_PERIOD = 1.0/60.0;
+    constexpr static float TARGET_UPDATE_PERIOD = 1.0/60.0;
 
-    /// Appelé au démarrage du jeu
-    void init();
+    explicit Game(sf::RenderWindow& window);
 
     /// Appelé toutes les TARGET_UPDATE_PERIOD ms pour mettre à jour l'état du jeu
     void update();
@@ -21,5 +29,19 @@ namespace Game {
     /// (permet d'avoir des animations propres même si update est appelé à un rythme pas suffisant pour cela, par exemple 10Hz)
     void render(sf::RenderWindow& renderTarget, float partialTick);
 
+    /// Appelé lorsque l'utilisateur ferme la fenêtre
+    void shutdown();
+
+    /// Appelé au début d'un clic
+    void mousePressed(int x, int y, sf::Mouse::Button button);
+
+    /// Appelé à la fin d'un clic
+    void mouseReleased(int x, int y, sf::Mouse::Button button);
+
+    /// Appelé lorsque la souris est déplacée
+    void mouseMoved(int x, int y);
+
+    void updateMousePos(int x, int y);
+
     std::shared_ptr<sf::Texture> loadTexture(std::string path);
-}
+};

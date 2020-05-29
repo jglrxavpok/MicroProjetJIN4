@@ -6,7 +6,6 @@
 #include <box2d/b2_body.h>
 
 using namespace std;
-using namespace Game;
 
 // TODO: configuration pour la résolution
 constexpr int WIDTH = 1600;
@@ -15,7 +14,7 @@ constexpr int HEIGHT = 900;
 /// On essaie pas de rattrapper plus de 10 frames
 constexpr int MAX_CATCHUP_ATTEMPTS = 10;
 
-void processEvents(sf::RenderWindow& window);
+void processEvents(Game& game, sf::RenderWindow& window);
 
 int gameMain()
 {
@@ -24,7 +23,7 @@ int gameMain()
     // si vous n'êtes pas résolu à faire fonctionner Valgrind sous Windows, cette ligne ne vous servira pas
     setenv("DISPLAY", "127.0.0.1:0", true);
 #endif
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Micro Projet JIN4", sf::Style::Close | sf::Style::Titlebar);
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Micro Projet JIN4", sf::Style::Close);
 
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = "resources/imgui.ini";
@@ -32,34 +31,35 @@ int gameMain()
     sf::Clock deltaClock;
     float lag = 0.0; // in ms
 
-    init();
+    Game game{window};
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();
-        processEvents(window);
+        processEvents(game, window);
 
         lag += dt.asSeconds();
 
         int catchupAttempts = 0;
-        while (lag >= TARGET_UPDATE_PERIOD && catchupAttempts < MAX_CATCHUP_ATTEMPTS) {
-            update();
-            lag -= TARGET_UPDATE_PERIOD;
+        while (lag >= Game::TARGET_UPDATE_PERIOD && catchupAttempts < MAX_CATCHUP_ATTEMPTS) {
+            game.update();
+            lag -= Game::TARGET_UPDATE_PERIOD;
             catchupAttempts++;
         }
 
         ImGui::SFML::Update(window, dt);
         // TODO: rendu ImGui
 
-        render(window, lag / TARGET_UPDATE_PERIOD);
+        game.render(window, lag / Game::TARGET_UPDATE_PERIOD);
         ImGui::SFML::Render(window);
         window.display();
     }
+    game.shutdown();
     ImGui::SFML::Shutdown();
 
     return 0;
 }
 
-void processEvents(sf::RenderWindow& window) {
+void processEvents(Game& game, sf::RenderWindow& window) {
     sf::Event event;
     while (window.pollEvent(event))
     {
@@ -68,6 +68,29 @@ void processEvents(sf::RenderWindow& window) {
             case sf::Event::Closed:
                 window.close();
                 break;
+
+            case sf::Event::MouseButtonPressed: {
+                int x = event.mouseButton.x;
+                int y = event.mouseButton.y;
+                sf::Mouse::Button button = event.mouseButton.button;
+                game.mousePressed(x, y, button);
+                break;
+            }
+
+            case sf::Event::MouseButtonReleased: {
+                int x = event.mouseButton.x;
+                int y = event.mouseButton.y;
+                sf::Mouse::Button button = event.mouseButton.button;
+                game.mouseReleased(x, y, button);
+                break;
+            }
+
+            case sf::Event::MouseMoved: {
+                int x = event.mouseMove.x;
+                int y = event.mouseMove.y;
+                game.mouseMoved(x, y);
+                break;
+            }
         }
     }
 }

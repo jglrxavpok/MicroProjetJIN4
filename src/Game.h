@@ -5,14 +5,27 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "Scene.h"
+#include "RNG.h"
+#include "MusicLine.h"
 
 class Game {
 private:
     std::unique_ptr<Scene> scene = nullptr;
+    float time = 0.0f;
     int mousePosX;
     int mousePosY;
-    bool buttonPressed[sf::Mouse::ButtonCount];
+    bool buttonPressed[sf::Mouse::ButtonCount] = {false};
     sf::RenderWindow& renderTarget;
+    RNG rng{};
+
+    std::shared_ptr<sf::Texture> badGuyTexture = nullptr;
+
+    /// la ligne de musique en train d'être dessinée (null si le clic gauche n'est pas enfoncé)
+    std::shared_ptr<MusicLine> currentMusicLine = nullptr;
+
+    constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
+
+    void spawnEnemy();
 
 public:
     /// 60Hz

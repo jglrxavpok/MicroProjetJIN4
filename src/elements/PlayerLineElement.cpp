@@ -3,12 +3,15 @@
 //
 
 #include "PlayerLineElement.h"
+
+#include <utility>
 #include "Scene.h"
 #define _USE_MATH_DEFINES
 #include "math.h"
 
 
-PlayerLineElement::PlayerLineElement(float startX, float startY, float endX, float endY): startX(startX), startY(startY), endX(endX), endY(endY) {
+PlayerLineElement::PlayerLineElement(std::shared_ptr<MusicLine> parent, float startX, float startY, float endX, float endY):
+    parent(std::move(parent)), startX(startX), startY(startY), endX(endX), endY(endY) {
     float dx = endX-startX;
     float dy = endY-startY;
     length = sqrt(dx*dx+dy*dy);

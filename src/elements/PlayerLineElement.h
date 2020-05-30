@@ -6,10 +6,11 @@
 
 #include "SceneElement.h"
 #include <box2d/box2d.h>
+#include <memory>
+#include "MusicLine.h"
 
 class PlayerLineElement: public SceneElement {
 private:
-    constexpr static float MAX_LIFETIME = 5.0f; // 5s
     float length;
     float startX;
     float startY;
@@ -18,9 +19,13 @@ private:
     b2Body* rigidbody;
 
     float life;
+    /// ligne à laquelle cette élément appartient.
+    /// le shared_ptr permet de détruire la MusicLine une fois que tous ses enfants sont détruits
+    std::shared_ptr<MusicLine> parent;
 
 public:
-    explicit PlayerLineElement(float startX, float startY, float endX, float endY);
+    constexpr static float MAX_LIFETIME = 5.0f; // 5s
+    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, float startX, float startY, float endX, float endY);
 
     void update(float elapsedTime) override;
 

@@ -1,0 +1,24 @@
+//
+// Created by jglrxavpok on 30/05/2020.
+//
+
+#pragma once
+#include <memory>
+#include <iostream>
+#include "Scene.h"
+
+/// Permet de gérer le comportement d'une ligne de musique dessinée par le joueur avec la souris
+/// Responsable de l'ajout des éléments à la scène, de vérifier si des ennemis sont à l'intérieur de cercles, etc.
+///
+/// Est détruite quand ces enfants PlayerLineElement sont tous détruits. Pour que cela fonctionne, DOIT être utilisé avec un shared_ptr
+class MusicLine: public std::enable_shared_from_this<MusicLine> {
+private:
+    /// Scène dans laquelle ajouter les éléments
+    unique_ptr<Scene>& scene;
+
+public:
+    explicit MusicLine(unique_ptr<Scene>& scene);
+    void addLine(float startX, float startY, float endX, float endY);
+
+    ~MusicLine() = default;
+};

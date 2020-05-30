@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Scene.h"
 #include <iostream>
+#include <elements/EnemyElement.h>
 
 #define _USE_MATH_DEFINES
 #include "math.h"
@@ -22,6 +23,7 @@ std::shared_ptr<sf::Texture> Game::loadTexture(std::string path) {
 }
 
 Game::Game(sf::RenderWindow& window): renderTarget(window) {
+    badGuyTexture = loadTexture("resources/textures/bad_guy.png");
     unique_ptr<SceneElement> background = make_unique<LoopingBackground>(loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
 
@@ -30,9 +32,25 @@ Game::Game(sf::RenderWindow& window): renderTarget(window) {
     scene->addElement(make_unique<BoatElement>());
 }
 
+void Game::spawnEnemy() {
+    auto enemy = make_unique<EnemyElement>(badGuyTexture);
+    float centerY = rng.rand(ShoreElement::HEIGHT, 822.5f);
+    auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(1600-200, (int)centerY), scene->getRenderView());
+
+    enemy->getPosition() = coords;
+    scene->addElement(move(enemy));
+}
+
 void Game::update() {
     if(scene) {
         scene->updateAll(Game::TARGET_UPDATE_PERIOD);
+
+        time += Game::TARGET_UPDATE_PERIOD;
+
+        if(time >= ENEMY_SPAWN_PERIOD) {
+            spawnEnemy();
+            time -= ENEMY_SPAWN_PERIOD;
+        }
     }
 }
 
@@ -57,6 +75,7 @@ void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
     buttonPressed[button] = true;
     lastX = x;
     lastY = y;
+    currentMusicLine = make_shared<MusicLine>(scene);
 
     // TODO: propager l'event
 
@@ -65,6 +84,7 @@ void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
 void Game::mouseReleased(int x, int y, sf::Mouse::Button button) {
     updateMousePos(x, y);
     buttonPressed[button] = false;
+    currentMusicLine = nullptr;
 
     // TODO: propager l'event
 }
@@ -89,7 +109,9 @@ void Game::mouseMoved(int x, int y) {
                 if(deltaX*deltaX+deltaY*deltaY >= 20*20) { // plus de 50 pixels de distance
                     auto startCoords = renderTarget.mapPixelToCoords(sf::Vector2i(lastX, lastY), scene->getRenderView());
                     auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
-                    scene->addElement(make_unique<PlayerLineElement>(startCoords.x, startCoords.y, endCoords.x, endCoords.y));
+                    if(currentMusicLine) {
+                        currentMusicLine->addLine(startCoords.x, startCoords.y, endCoords.x, endCoords.y);
+                    }
 
                     lastX = x;
                     lastY = y;

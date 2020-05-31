@@ -32,4 +32,5 @@ public:
     b2World& getPhysicsWorld();
     sf::View& getRenderView();
     unique_ptr<SceneElement>& getBackground();
+    vector<unique_ptr<SceneElement>>& getElements();
 };

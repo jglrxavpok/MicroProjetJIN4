@@ -5,7 +5,7 @@
 #include "EnemyElement.h"
 
 EnemyElement::EnemyElement(std::shared_ptr<sf::Texture> texture): texture(texture) {
-    sprite.setTexture(*texture);
+    if(texture) sprite.setTexture(*texture);
 }
 
 void EnemyElement::update(float elapsedTime) {

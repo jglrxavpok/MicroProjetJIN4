@@ -53,3 +53,7 @@ sf::View& Scene::getRenderView() {
 unique_ptr<SceneElement>& Scene::getBackground() {
     return background;
 }
+
+vector<unique_ptr<SceneElement>>& Scene::getElements() {
+    return elements;
+}

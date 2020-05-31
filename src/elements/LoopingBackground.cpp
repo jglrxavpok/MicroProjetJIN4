@@ -7,8 +7,10 @@
 #include "LoopingBackground.h"
 
 LoopingBackground::LoopingBackground(std::shared_ptr<sf::Texture> texture): texture(texture) {
-    spriteLeft.setTexture(*texture);
-    spriteRight.setTexture(*texture);
+    if(texture) {
+        spriteLeft.setTexture(*texture);
+        spriteRight.setTexture(*texture);
+    }
 }
 
 void LoopingBackground::update(float elapsedTime) {

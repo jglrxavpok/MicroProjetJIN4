@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <elements/PlayerLineElement.h>
+#include <elements/EnemyElement.h>
 #include "Scene.h"
 #include "MusicLine.h"
 
@@ -30,5 +31,36 @@ namespace myNameSpace {
 
         // le weak pointeur doit maintenant être invalide
         ASSERT_TRUE(weakLine.expired());
+    }
+
+    TEST(TestMusicLine, TestSurroundEnemies) {
+        auto scene = make_unique<Scene>(nullptr);
+        auto line = make_shared<MusicLine>(scene);
+
+        int steps = 3;
+        float ang = 0.0f;
+        float step = M_PI_2/steps;
+        float radius = 1.0f;
+        for (int i = 0; i < steps; ++i) {
+            float preX = cos(ang) * radius;
+            float preY = sin(ang) * radius;
+            ang += step;
+            float x = cos(ang) * radius;
+            float y = sin(ang) * radius;
+            line->addLine(preX, preY, x, y);
+        }
+
+        unique_ptr<SceneElement> enemy1 = make_unique<EnemyElement>(nullptr);
+        unique_ptr<SceneElement> enemy2 = make_unique<EnemyElement>(nullptr);
+        enemy2->getPosition() = sf::Vector2f(100.0f, 100.0f); // outside of circle
+
+        ASSERT_TRUE(line->surrounds(enemy1));
+        ASSERT_FALSE(line->surrounds(enemy2));
+
+        scene->addElement(move(enemy1));
+        scene->addElement(move(enemy2));
+        ASSERT_EQ(steps + 2, scene->getElements().size());
+        line->destroySurroundedEnemies();
+        ASSERT_EQ(steps + 1, scene->getElements().size());
     }
 }

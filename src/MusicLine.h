@@ -41,12 +41,15 @@ private:
         float y;
         bool partOfCycle;
         int value;
-        std::shared_ptr<MusicLinePart> l1;
-        std::shared_ptr<MusicLinePart> l2;
+        shared_ptr<MusicLinePart> firstLine;
+        shared_ptr<MusicLinePart> secondLine;
     } vertex;
 
     unique_ptr<GraphCycle> findCycle(vertex* start, map<vertex*, vector<vertex*>>& adjacency);
     unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, map<vertex *, vertex *>& parents);
+
+    /// Connecte 'v' aux deux points les plus proches présents sur la ligne 'along'
+    void connectToClosest2(vertex* v, vector<vertex>& allVertices, map<vertex*, vector<vertex*>>& adjacency, const shared_ptr<MusicLinePart>& along);
 
 public:
     explicit MusicLine(unique_ptr<Scene>& scene);

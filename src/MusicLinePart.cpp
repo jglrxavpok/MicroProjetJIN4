@@ -10,7 +10,7 @@ MusicLinePart::MusicLinePart(float startX, float startY, float endX, float endY)
 
 bool MusicLinePart::intersects(MusicLinePart &other, sf::Vector2f& intersectionOut) {
     float determinant = (startX-endX) * (other.startY - other.endY) - (startY - endY) * (other.startX - other.endX);
-    if(determinant == 0.0f) {
+    if(determinant < 0.001f && determinant > -0.001f) {
         return false;
     }
     float tDeterminant = (startX - other.startX) * (other.startY - other.endY) - (startY - other.startY) * (other.startX - other.endX);

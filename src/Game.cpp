@@ -67,14 +67,15 @@ void Game::updateMousePos(int x, int y) {
     mousePosY = y;
 }
 
-int lastX = 0;
-int lastY = 0;
+float lastX = 0;
+float lastY = 0;
 
 void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
     updateMousePos(x, y);
     buttonPressed[button] = true;
-    lastX = x;
-    lastY = y;
+    auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
+    lastX = coords.x;
+    lastY = coords.y;
     currentMusicLine = make_shared<MusicLine>(scene);
 
     // TODO: propager l'event
@@ -87,7 +88,7 @@ void Game::mouseReleased(int x, int y, sf::Mouse::Button button) {
 
     if(currentMusicLine) {
         int cycles = currentMusicLine->countCycles();
-        if(cycles >= 0) {
+        if(cycles > 0) {
             cout << "boum, " << cycles << " cycles!" << endl;
         }
     }
@@ -111,17 +112,16 @@ void Game::mouseMoved(int x, int y) {
 
             // FIXME: tmp
             if(button == sf::Mouse::Left) {
-                int deltaX = x - lastX;
-                int deltaY = y - lastY;
-                if(deltaX*deltaX+deltaY*deltaY >= 20*20) { // plus de 50 pixels de distance
-                    auto startCoords = renderTarget.mapPixelToCoords(sf::Vector2i(lastX, lastY), scene->getRenderView());
-                    auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
+                auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
+                float deltaX = endCoords.x - lastX;
+                float deltaY = endCoords.y - lastY;
+                if(deltaX*deltaX+deltaY*deltaY >= 20*20) { // plus de 20 pixels de distance
                     if(currentMusicLine) {
-                        currentMusicLine->addLine(startCoords.x, startCoords.y, endCoords.x, endCoords.y);
+                        currentMusicLine->addLine(lastX, lastY, endCoords.x, endCoords.y);
                     }
 
-                    lastX = x;
-                    lastY = y;
+                    lastX = endCoords.x;
+                    lastY = endCoords.y;
                 }
             }
         }

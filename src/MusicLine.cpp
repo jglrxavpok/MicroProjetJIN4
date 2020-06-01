@@ -43,60 +43,66 @@ void MusicLine::updateGraph() {
     cycles.clear();
     parts.erase(remove_if(parts.begin(), parts.end(), [](const auto w) { return w.expired(); }), parts.end());
 
-    // TODO: 1. créer des polygônes correspondants aux boucles créées par l'ajout des éléments
-    // cf https://stackoverflow.com/questions/35456877/how-to-detect-all-regions-that-are-surrounded-by-n-line-segments ?
+    // on a un seul thread, on peut donc supposer sans soucis que les weak_ptr de parts donneront un shared_ptr non-expiré dans la suite de cette méthode
 
     // Attention, l'algorithme ci-dessus est sub-optimal
     // on commence par chercher les intersections des lignes
     vector<vertex> vertices;
 
-
+    // on crée les arêtes du graphe
+    map<vertex*, vector<vertex*>> adjacency; // TODO: multimap
     for(int i = 0;i<parts.size();i++) {
         auto& wl1 = parts[i];
         auto l1 = wl1.lock();
+
+        // chaque ligne enregistre son point de fin, sauf pour la première qui enregistre aussi son point de départ
+        if(i == 0) {
+            vertices.push_back({.x = l1->startX, .y = l1->startY, .partOfCycle = false, .value = 0, .firstLine=nullptr, .secondLine = l1});
+        }
         if(i < parts.size()-1) {
             auto& wl2 = parts[i+1];
             auto l2 = wl2.lock();
-            vertices.push_back({.x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .l1 = l1, .l2 = l2});
+            if(l2) {
+                vertices.push_back({.x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .firstLine=l1, .secondLine = l2});
+            }
         } else {
-            vertices.push_back({.x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .l1 = l1, .l2 = nullptr});
+            vertices.push_back({.x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .firstLine=l1, .secondLine = nullptr});
         }
 
-        for(int j = 0;j<parts.size();j++) {
-            auto& wl2 = parts[j];
-            auto l2 = wl2.lock();
-            if(l1 != l2) {
-                sf::Vector2f intersectionPoint(0,0);
-                if(l1->intersects(*l2, intersectionPoint)) {
-                    cout << "found intersection: " << intersectionPoint.x << ", " << intersectionPoint.y << endl;
-                    vertices.push_back({.x = intersectionPoint.x, .y = intersectionPoint.y, .partOfCycle = false, .value = 0, .l1 = l1, .l2 = l2});
-                }
-            }
-        }
+        // lie les deux derniers sommets
+        auto last = &vertices[vertices.size()-1];
+        auto beforeLast = &vertices[vertices.size()-2];
+        adjacency[last].push_back(beforeLast);
+        adjacency[beforeLast].push_back(last);
     }
 
-    // on crée les arêtes du graphe
-    map<vertex*, vector<vertex*>> adjacency; // TODO: multimap
-    for (int i = 0; i < vertices.size(); ++i) {
-        for (int j = 0; j < vertices.size(); ++j) {
-            if(i != j) {
-                vertex& a = vertices[i];
-                vertex& b = vertices[j];
-                if(a.x == b.x && a.y == b.y) {
-                    continue;
-                }
-                // si les deux points sur la même ligne
-                if(a.l1 == b.l1 || a.l1 == b.l2 || a.l2 == b.l1 || a.l2 == b.l2) {
-                    auto* aPtr = &vertices[i];
-                    auto* bPtr = &vertices[j];
-                    auto& aAdjacency = adjacency[aPtr];
-                    auto& bAdjacency = adjacency[bPtr];
-                    if(find(aAdjacency.begin(), aAdjacency.end(), bPtr) == aAdjacency.end()) {
-                        adjacency[aPtr].push_back(bPtr);
-                    }
-                    if(find(bAdjacency.begin(), bAdjacency.end(), aPtr) == bAdjacency.end()) {
-                        adjacency[bPtr].push_back(aPtr);
-                    }
+    // ajout des points d'intersection
+    map<pair<int, int>, bool> alreadyChecked;
+    for(int i = 0;i<parts.size();i++) {
+        auto &wl1 = parts[i];
+        auto l1 = wl1.lock();
+
+        for(int j = 0;j<parts.size();j++) {
+            auto &wl2 = parts[j];
+            auto l2 = wl2.lock();
+
+            // les segments ne doivent pas être consécutifs (ou confondus)
+            if(abs(i-j) < 2) {
+                continue;
+            }
+            int minIndex = min(i, j);
+            int maxIndex = max(i, j);
+            if( ! alreadyChecked[{ minIndex, maxIndex }]) {
+                alreadyChecked[{ minIndex, maxIndex }] = true;
+                sf::Vector2f intersectionPoint(0,0);
+                if(l1->intersects(*l2, intersectionPoint)) {
+                    vertices.push_back({.x = intersectionPoint.x, .y = intersectionPoint.y, .partOfCycle = false, .value = 0, .firstLine=nullptr, .secondLine=nullptr}); // origine mise à nullptr pour que connectToClosest2 ne connecte pas ce point à lui-même
+                    cout << "found intersection at " << intersectionPoint.x << ", " << intersectionPoint.y << endl;
+                    auto* newVertex = &vertices[vertices.size()-1];
+                    connectToClosest2(newVertex, vertices, adjacency, l1);
+                    connectToClosest2(newVertex, vertices, adjacency, l2);
+                    newVertex->firstLine = l1;
+                    newVertex->secondLine = l2;
                 }
             }
         }
@@ -107,6 +113,9 @@ void MusicLine::updateGraph() {
     map<vertex*, bool> visited;
     for(int i = 0; i < vertices.size(); i++) {
         auto* vertex = &vertices[i];
+
+        if(vertex->partOfCycle)
+            continue;
 
         // on reset les niveaux
         for(auto& v : vertices) {
@@ -127,29 +136,26 @@ void MusicLine::updateGraph() {
 }
 
 unique_ptr<GraphCycle> MusicLine::findCycle(vertex* start, map<vertex*, vector<vertex*>>& adjacency) {
+    map<vertex*, vertex*> parents;
     queue<vertex*> toVisit;
+
     start->value = 1;
     toVisit.push(start);
-    map<vertex*, vertex*> parents;
     while(!toVisit.empty()) {
         vertex* v = toVisit.front();
-        if(v->partOfCycle) {
-            toVisit.pop();
-            continue;
-        }
+        toVisit.pop();
         int currentValue = v->value;
 
         for(vertex* neighbor : adjacency[v]) {
-            parents[neighbor] = v;
             if(neighbor->value >= currentValue) {
                 // cycle trouvé, il manque plus qu'à reconstruire le polygone:
-                return reconstructCycle(neighbor, parents);
+                return reconstructCycle(v, parents);
             } else if(neighbor->value == 0) { // pas encore visité
+                parents[neighbor] = v;
                 neighbor->value = currentValue+1;
                 toVisit.push(neighbor);
             }
         }
-        toVisit.pop();
     }
     // aucun cycle
     return nullptr;
@@ -183,6 +189,50 @@ unique_ptr<GraphCycle> MusicLine::reconstructCycle(vertex* endPoint, map<vertex*
 
     cout << "end" << endl;
     return make_unique<GraphCycle>(vertices);
+}
+
+void MusicLine::connectToClosest2(vertex *v, vector<vertex> &allVertices,
+                                  map<vertex *, vector<vertex *>> &adjacency, const shared_ptr<MusicLinePart>& along) {
+    vertex* closest = nullptr;
+    vertex* secondClosest = nullptr;
+    float sqDistanceClosest = INFINITY;
+    float sqDistance2ndClosest = INFINITY;
+    for(int i = 0;i < allVertices.size();i++) {
+        vertex* other = &allVertices[i];
+        // on est bien sur la même ligne
+        if(other->firstLine != along && other->secondLine != along) {
+            continue;
+        }
+
+        float deltaX = other->x - v->x;
+        float deltaY = other->y - v->y;
+        float sqDistance = deltaX*deltaX+deltaY*deltaY;
+        // plus proche que les 2 plus proches
+        if(sqDistance < sqDistanceClosest) {
+            secondClosest = closest;
+            sqDistance2ndClosest = sqDistanceClosest;
+
+            closest = other;
+            sqDistanceClosest = sqDistance;
+        } else if(sqDistance < sqDistance2ndClosest) { // seulement 2e plus proche
+            secondClosest = other;
+            sqDistance2ndClosest = sqDistance;
+        }
+    }
+
+    assert(closest != nullptr);
+    assert(secondClosest != nullptr);
+
+    adjacency[closest].push_back(v);
+    adjacency[secondClosest].push_back(v);
+
+    adjacency[v].push_back(closest);
+    adjacency[v].push_back(secondClosest);
+
+    // brise les anciennes adjacences
+    auto& adjClosest = adjacency[closest];
+    adjClosest.erase(remove(adjClosest.begin(), adjClosest.end(), secondClosest), adjClosest.end());
+    adjacency[secondClosest].erase(remove(adjacency[secondClosest].begin(), adjacency[secondClosest].end(), closest), adjacency[secondClosest].end());
 }
 
 GraphCycle::GraphCycle(vector<sf::Vector2f> vertices): vertices(move(vertices)) {}

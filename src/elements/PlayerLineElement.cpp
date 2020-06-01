@@ -47,14 +47,11 @@ void PlayerLineElement::update(float elapsedTime) {
 }
 
 void PlayerLineElement::render(sf::RenderWindow &target, float partialTick) {
-    auto s = sf::RectangleShape(sf::Vector2f(length, 20.0f));
-    s.setOrigin(length/2.0f, 10.0f);
-    s.setRotation(rigidbody->GetAngle()*180.0f/M_PI);
-    s.setPosition(rigidbody->GetPosition().x, rigidbody->GetPosition().y);
-
-    uint8_t alpha = (uint8_t) floor(life/MAX_LIFETIME*255);
-    s.setFillColor(sf::Color{0,0,0,alpha});
-    target.draw(s);
+    sf::Vertex line[] = {
+        sf::Vertex(sf::Vector2f(startX, startY)),
+        sf::Vertex(sf::Vector2f(endX, endY)),
+    };
+    target.draw(line, 2, sf::Lines);
 }
 
 PlayerLineElement::~PlayerLineElement() {

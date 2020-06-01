@@ -55,7 +55,9 @@ namespace myNameSpace {
         ASSERT_EQ(0, line->countCycles());
         float x = cos(ang) * radius;
         float y = sin(ang) * radius;
-        line->addLine(x, y, cos(step)*2.0f, sin(step)*2.0f); // on force une intersection
+        line->addLine(x, y, -0.5f, -0.5f);
+        ASSERT_EQ(0, line->countCycles());
+        line->addLine(-0.5f, -0.5f, 0.0f, 10.0f);// on force une intersection
 
         ASSERT_EQ(1, line->countCycles());
 

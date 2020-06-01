@@ -10,12 +10,10 @@ MusicLine::MusicLine(std::unique_ptr<Scene>& scene): scene(scene) {
 }
 
 void MusicLine::addLine(float startX, float startY, float endX, float endY) {
-    scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), startX, startY, endX, endY));
-    // TODO: 0. Comment gérer les éléments qui ont expiré?
-    // TODO: 1. créer des polygônes correspondants aux boucles créées par l'ajout des éléments
-    // cf https://stackoverflow.com/questions/35456877/how-to-detect-all-regions-that-are-surrounded-by-n-line-segments ?
-    // https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
-    // TODO: Briser les lignes qui rentrent en contact avec un ennemi? (à la Pokémon Ranger)
+    auto partReference = make_shared<MusicLinePart>(startX, startY, endX, endY);
+    parts.emplace_back(partReference);
+    scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), partReference, startX, startY, endX, endY));
+    updateGraph();
 }
 
 bool MusicLine::surrounds(unique_ptr<SceneElement> &) {
@@ -24,11 +22,12 @@ bool MusicLine::surrounds(unique_ptr<SceneElement> &) {
 }
 
 void MusicLine::destroyEnemy(EnemyElement* enemy) {
-    // TODO
+    // TODO: add feedback to player
     enemy->scheduleForRemoval();
 }
 
 void MusicLine::destroySurroundedEnemies() {
+    updateGraph(); // les morceaux ont pu expirer depuis la dernière MàJ
     for(auto& elem : scene->getElements()) {
         auto* nakedPtr = elem.get();
         if(auto* enemy = dynamic_cast<EnemyElement*>(nakedPtr)) {
@@ -37,4 +36,17 @@ void MusicLine::destroySurroundedEnemies() {
             }
         }
     }
+}
+
+void MusicLine::updateGraph() {
+    parts.erase(remove_if(parts.begin(), parts.end(), [](const auto w) { return w.expired(); }), parts.end());
+
+    // TODO: 1. créer des polygônes correspondants aux boucles créées par l'ajout des éléments
+    // cf https://stackoverflow.com/questions/35456877/how-to-detect-all-regions-that-are-surrounded-by-n-line-segments ?
+    // https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
+}
+
+int MusicLine::countParts() {
+    updateGraph();
+    return parts.size();
 }

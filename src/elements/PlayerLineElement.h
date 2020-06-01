@@ -23,9 +23,12 @@ private:
     /// le shared_ptr permet de détruire la MusicLine une fois que tous ses enfants sont détruits
     std::shared_ptr<MusicLine> parent;
 
+    /// morceau de la ligne correspondant à cet élément. Permet à la MusicLine parente de savoir si cet élément a expiré
+    std::shared_ptr<MusicLinePart> part;
+
 public:
     constexpr static float MAX_LIFETIME = 5.0f; // 5s
-    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, float startX, float startY, float endX, float endY);
+    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY);
 
     void update(float elapsedTime) override;
 
@@ -33,5 +36,5 @@ public:
 
     void onAddition(Scene &scene) override;
 
-    ~PlayerLineElement();
+    ~PlayerLineElement() override;
 };

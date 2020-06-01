@@ -63,4 +63,16 @@ namespace myNameSpace {
         line->destroySurroundedEnemies();
         ASSERT_EQ(steps + 1, scene->getElements().size());
     }
+
+    TEST(TestMusicLine, PartReferenceExpiration) {
+        auto scene = make_unique<Scene>(nullptr);
+        auto line = make_shared<MusicLine>(scene);
+
+        line->addLine(0,0,0,0);
+        ASSERT_EQ(1, line->countParts());
+        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        ASSERT_EQ(1, line->countParts());
+        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        ASSERT_EQ(0, line->countParts());
+    }
 }

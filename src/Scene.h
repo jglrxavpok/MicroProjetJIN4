@@ -18,8 +18,11 @@ private:
     static constexpr int velocityIterations = 8;
 
     unique_ptr<SceneElement> background = nullptr;
-    vector<unique_ptr<SceneElement>> elements;
+
+    // attention l'ordre est important, les destructeurs détruisent dans l'ordre inverse de déclaration, et des éléments
+    // peuvent vouloir libérer un b2Body (ou autre) dans leur destructeur. 'physics' doit donc être valide à cet instant
     b2World physics{ b2Vec2_zero /*b2Vec2(100.0f, 0.0f) */ };
+    vector<unique_ptr<SceneElement>> elements;
     sf::View renderView{sf::FloatRect(0.0f, 0.0f, 1600.0f, 900.0f)};
 
 public:

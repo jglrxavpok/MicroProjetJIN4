@@ -10,8 +10,8 @@
 #include "math.h"
 
 
-PlayerLineElement::PlayerLineElement(std::shared_ptr<MusicLine> parent, float startX, float startY, float endX, float endY):
-    parent(std::move(parent)), startX(startX), startY(startY), endX(endX), endY(endY) {
+PlayerLineElement::PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY):
+    parent(std::move(parent)), part(std::move(part)), startX(startX), startY(startY), endX(endX), endY(endY) {
     float dx = endX-startX;
     float dy = endY-startY;
     length = sqrt(dx*dx+dy*dy);
@@ -38,6 +38,8 @@ void PlayerLineElement::onAddition(Scene &scene) {
 }
 
 void PlayerLineElement::update(float elapsedTime) {
+    // TODO: Briser les lignes qui rentrent en contact avec un ennemi? (à la Pokémon Ranger)
+
     life -= elapsedTime;
     if(life <= 0) {
         scheduleForRemoval();

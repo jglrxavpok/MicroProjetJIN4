@@ -9,6 +9,14 @@
 #include "elements/EnemyElement.h"
 #include "MusicLinePart.h"
 
+class GraphCycle {
+private:
+    vector<sf::Vector2f> vertices;
+
+public:
+    explicit GraphCycle(vector<sf::Vector2f> vertices);
+};
+
 /// Permet de gérer le comportement d'une ligne de musique dessinée par le joueur avec la souris
 /// Responsable de l'ajout des éléments à la scène, de vérifier si des ennemis sont à l'intérieur de cercles, etc.
 ///
@@ -20,12 +28,25 @@ private:
 
     /// références aux morceaux de la ligne. Permet de connaître
     vector<weak_ptr<MusicLinePart>> parts;
+    vector<unique_ptr<GraphCycle>> cycles;
 
     void destroyEnemy(EnemyElement* enemy);
 
     /// mets à jour le graphe permettant de trouver les ennemis entourés
     /// Prends aussi en compte les lignes qui ont pu expirer
     void updateGraph();
+
+    typedef struct {
+        float x;
+        float y;
+        bool partOfCycle;
+        int value;
+        std::shared_ptr<MusicLinePart> l1;
+        std::shared_ptr<MusicLinePart> l2;
+    } vertex;
+
+    unique_ptr<GraphCycle> findCycle(vertex* start, map<vertex*, vector<vertex*>>& adjacency);
+    unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, map<vertex *, vertex *>& parents);
 
 public:
     explicit MusicLine(unique_ptr<Scene>& scene);
@@ -38,6 +59,7 @@ public:
     void destroySurroundedEnemies();
 
     int countParts();
+    int countCycles();
 
     ~MusicLine() = default;
 };

@@ -3,14 +3,17 @@
 //
 
 #pragma once
+#include <SFML/Graphics.hpp>
 
 class MusicLinePart {
 private:
+public:
     float startX;
     float startY;
     float endX;
     float endY;
 
-public:
     explicit MusicLinePart(float startX, float startY, float endX, float endY);
+
+    bool intersects(MusicLinePart& other, sf::Vector2f& intersectionOut);
 };

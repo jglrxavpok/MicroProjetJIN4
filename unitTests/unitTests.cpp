@@ -37,10 +37,12 @@ namespace myNameSpace {
         auto scene = make_unique<Scene>(nullptr);
         auto line = make_shared<MusicLine>(scene);
 
-        int steps = 3;
+        int steps = 6;
         float ang = 0.0f;
-        float step = M_PI_2/steps;
+        float step = 2.0f*M_PI/steps;
         float radius = 1.0f;
+
+        int lineCount = steps+1; // +1 pour s'assurer d'avoir une intersection
         for (int i = 0; i < steps; ++i) {
             float preX = cos(ang) * radius;
             float preY = sin(ang) * radius;
@@ -49,6 +51,13 @@ namespace myNameSpace {
             float y = sin(ang) * radius;
             line->addLine(preX, preY, x, y);
         }
+
+        ASSERT_EQ(0, line->countCycles());
+        float x = cos(ang) * radius;
+        float y = sin(ang) * radius;
+        line->addLine(x, y, cos(step)*2.0f, sin(step)*2.0f); // on force une intersection
+
+        ASSERT_EQ(1, line->countCycles());
 
         unique_ptr<SceneElement> enemy1 = make_unique<EnemyElement>(nullptr);
         unique_ptr<SceneElement> enemy2 = make_unique<EnemyElement>(nullptr);
@@ -59,9 +68,9 @@ namespace myNameSpace {
 
         scene->addElement(move(enemy1));
         scene->addElement(move(enemy2));
-        ASSERT_EQ(steps + 2, scene->getElements().size());
+        ASSERT_EQ(lineCount + 2, scene->getElements().size());
         line->destroySurroundedEnemies();
-        ASSERT_EQ(steps + 1, scene->getElements().size());
+        ASSERT_EQ(lineCount + 1, scene->getElements().size());
     }
 
     TEST(TestMusicLine, PartReferenceExpiration) {

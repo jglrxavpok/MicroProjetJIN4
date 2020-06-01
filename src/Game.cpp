@@ -84,6 +84,13 @@ void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
 void Game::mouseReleased(int x, int y, sf::Mouse::Button button) {
     updateMousePos(x, y);
     buttonPressed[button] = false;
+
+    if(currentMusicLine) {
+        int cycles = currentMusicLine->countCycles();
+        if(cycles >= 0) {
+            cout << "boum, " << cycles << " cycles!" << endl;
+        }
+    }
     currentMusicLine = nullptr;
 
     // TODO: propager l'event

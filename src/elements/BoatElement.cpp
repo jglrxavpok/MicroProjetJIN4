@@ -7,9 +7,10 @@
 #define _USE_MATH_DEFINES
 #include "math.h"
 #include <cmath>
+#include <utility>
 #include <box2d/b2_joint.h>
 
-BoatElement::BoatElement(): SceneElement() {
+BoatElement::BoatElement(GameState& gameState): gameState(gameState), SceneElement() {
     pointyPart.setFillColor(sf::Color::Green);
     squarePart.setFillColor(sf::Color::Green);
 
@@ -95,4 +96,8 @@ void BoatElement::render(sf::RenderWindow &target, float partialTick) {
 
     target.draw(squarePart);
     target.draw(pointyPart);
+}
+
+void BoatElement::damage(float amount) {
+    gameState.damage(amount);
 }

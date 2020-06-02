@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "RNG.h"
 #include "MusicLine.h"
+#include "GameState.h"
 
 class Game {
 private:
@@ -17,6 +18,7 @@ private:
     bool buttonPressed[sf::Mouse::ButtonCount] = {false};
     sf::RenderWindow& renderTarget;
     RNG rng{};
+    GameState state{10.0f};
 
     std::shared_ptr<sf::Texture> badGuyTexture = nullptr;
 
@@ -26,6 +28,7 @@ private:
     constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
 
     void spawnEnemy();
+    void renderHealthBar();
 
 public:
     /// 60Hz

@@ -43,8 +43,10 @@ void EnemyElement::onAddition(Scene &scene) {
 }
 
 void EnemyElement::beginContact(SceneElement *other) {
+    if(shouldBeRemoved())
+        return;
     if(auto* player = dynamic_cast<BoatElement*>(other)) {
-        // TODO: damage player
+        player->damage(1.0f);
         this->scheduleForRemoval();
     }
 }

@@ -29,7 +29,7 @@ Game::Game(sf::RenderWindow& window): renderTarget(window) {
 
     scene->addElement(make_unique<ShoreElement>(0.0f));
     scene->addElement(make_unique<ShoreElement>(822.5f));
-    scene->addElement(make_unique<BoatElement>());
+    scene->addElement(make_unique<BoatElement>(state));
 }
 
 void Game::spawnEnemy() {
@@ -42,6 +42,9 @@ void Game::spawnEnemy() {
 }
 
 void Game::update() {
+    if(state.isGameOver()) {
+        // TODO: switch to game over screen :c
+    }
     if(scene) {
         scene->updateAll(Game::TARGET_UPDATE_PERIOD);
 
@@ -52,6 +55,24 @@ void Game::update() {
             time -= ENEMY_SPAWN_PERIOD;
         }
     }
+}
+
+void Game::renderHealthBar() {
+    auto& view = renderTarget.getView();
+
+    sf::RectangleShape background(sf::Vector2f(view.getSize().x-40.0f, 50.0f));
+    background.setPosition(view.getSize().x/2.0f - background.getSize().x/2.0f, view.getSize().y-background.getSize().y-20.0f);
+    background.setFillColor(sf::Color(38,38,38,255));
+
+
+    float yPercent = 0.8f;
+    float xPercent = 0.95f;
+    sf::RectangleShape lifeBar(sf::Vector2f(background.getSize().x*xPercent*state.getLifeRatio(), background.getSize().y*yPercent));
+    lifeBar.setPosition(view.getSize().x/2.0f - background.getSize().x*xPercent/2.0f, background.getPosition().y+background.getSize().y*(1.0f-yPercent)/2.0f);
+    lifeBar.setFillColor(sf::Color(38,198,38,255));
+
+    renderTarget.draw(background);
+    renderTarget.draw(lifeBar);
 }
 
 void Game::render(sf::RenderWindow& renderTarget, float partialTick) {
@@ -66,6 +87,9 @@ void Game::render(sf::RenderWindow& renderTarget, float partialTick) {
         }
         renderTarget.setView(renderTarget.getDefaultView());
     }
+
+    // render UI
+    renderHealthBar();
 }
 
 void Game::updateMousePos(int x, int y) {

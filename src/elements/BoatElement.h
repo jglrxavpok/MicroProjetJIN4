@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <memory>
+#include "GameState.h"
 
 class BoatElement: public SceneElement {
 private:
@@ -33,12 +34,15 @@ private:
 
     /// contrôle la réduction de vitesse de rotation
     float angularDamping = 0.75f;
+    GameState& gameState;
 
 public:
-    explicit BoatElement();
+    explicit BoatElement(GameState& gameState);
 
     void update(float elapsedTime) override;
     void render(sf::RenderWindow &target, float partialTick) override;
 
     void onAddition(Scene &scene) override;
+
+    void damage(float amount);
 };

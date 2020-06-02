@@ -4,6 +4,7 @@
 
 #include <elements/PlayerLineElement.h>
 #include "MusicLine.h"
+#include "math_help.h"
 #include <queue>
 
 MusicLine::MusicLine(std::unique_ptr<Scene>& scene): scene(scene) {
@@ -17,8 +18,13 @@ void MusicLine::addLine(float startX, float startY, float endX, float endY) {
     updateGraph();
 }
 
-bool MusicLine::surrounds(unique_ptr<SceneElement> &) {
-    // TODO: 2. utiliser les polygônes sauvegardés pour trouver si l'élément (du moins son centre)
+bool MusicLine::surrounds(unique_ptr<SceneElement>& element) {
+    sf::Vector2f& pos = element->getPosition();
+    for(const auto& cycle : cycles) {
+        if(cycle->isInside(pos)) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -121,11 +127,6 @@ void MusicLine::updateGraph() {
             cycles.push_back(move(cycle));
         }
     }
-
-
-    // TODO
-
-
     // TODO: plus efficace avec cet algo? https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
 }
 
@@ -279,4 +280,55 @@ void MusicLine::debugRender(sf::RenderWindow &target) {
     }
 }
 
-GraphCycle::GraphCycle(vector<sf::Vector2f> vertices): vertices(move(vertices)) {}
+GraphCycle::GraphCycle(vector<sf::Vector2f> vertices): vertices(move(vertices)) {
+    minX = INFINITY;
+    minY = INFINITY;
+    maxX = -INFINITY;
+    maxY = -INFINITY;
+
+    for(const auto& v: this->vertices) {
+        if(v.x < minX) {
+            minX = v.x;
+        }
+        if(v.y < minY) {
+            minY = v.y;
+        }
+        if(v.x > maxX) {
+            maxX = v.x;
+        }
+        if(v.y > maxY) {
+            maxY = v.y;
+        }
+    }
+}
+
+bool GraphCycle::isInside(const sf::Vector2f &point) {
+    // https://stackoverflow.com/a/218081
+    if(point.x < minX)
+        return false;
+    if(point.y < minY)
+        return false;
+    if(point.x > maxX)
+        return false;
+    if(point.y > maxY)
+        return false;
+
+    // raycast pour trouver si on est à l'intérieur du cycle
+
+    float epsilon = 1.0f; // 1 pixel
+    float rayStartX = minX-epsilon;
+    float rayStartY = minY-epsilon;
+
+    int intersectionCount = 0;
+    // -1+1 itérations, car le dernier point est relié au premier
+    for (int i = 0; i < vertices.size(); ++i) {
+        int next = (i+1) % vertices.size();
+        auto& a = vertices[i];
+        auto& b = vertices[next];
+        sf::Vector2f intersectionPoint(0,0); // on s'en fiche mais la fonction en a besoin
+        if(intersectionTest(rayStartX, rayStartY, point.x, point.y, a.x, a.y, b.x, b.y, intersectionPoint)) {
+            intersectionCount++;
+        }
+    }
+    return (intersectionCount % 2) == 1;
+}

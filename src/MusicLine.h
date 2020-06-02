@@ -10,9 +10,18 @@
 #include "MusicLinePart.h"
 
 class GraphCycle {
+private:
+    // AABB pour des tests rapides
+    float minX;
+    float maxX;
+    float minY;
+    float maxY;
+
 public:
     vector<sf::Vector2f> vertices;
     explicit GraphCycle(vector<sf::Vector2f> vertices);
+
+    bool isInside(const sf::Vector2f& point);
 };
 
 /// Permet de gérer le comportement d'une ligne de musique dessinée par le joueur avec la souris

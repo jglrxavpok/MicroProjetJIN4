@@ -42,7 +42,7 @@ namespace myNameSpace {
         float step = 2.0f*M_PI/steps;
         float radius = 1.0f;
 
-        int lineCount = steps+1; // +1 pour s'assurer d'avoir une intersection
+        int lineCount = steps+2; // +2 pour s'assurer d'avoir une intersection
         for (int i = 0; i < steps; ++i) {
             float preX = cos(ang) * radius;
             float preY = sin(ang) * radius;
@@ -55,9 +55,9 @@ namespace myNameSpace {
         ASSERT_EQ(0, line->countCycles());
         float x = cos(ang) * radius;
         float y = sin(ang) * radius;
-        line->addLine(x, y, -0.5f, -0.5f);
+        line->addLine(x, y, 0.5f, 0.5f);
         ASSERT_EQ(0, line->countCycles());
-        line->addLine(-0.5f, -0.5f, 0.0f, 10.0f);// on force une intersection
+        line->addLine(0.5f, 0.5f, 0.0f, 10.0f);// on force une intersection
 
         ASSERT_EQ(1, line->countCycles());
 

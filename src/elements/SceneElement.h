@@ -25,4 +25,7 @@ public:
     bool shouldBeRemoved();
 
     sf::Vector2f& getPosition();
+
+    virtual void beginContact(SceneElement* other);
+    virtual void endContact(SceneElement* other);
 };

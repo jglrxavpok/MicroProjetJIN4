@@ -15,3 +15,7 @@ void SceneElement::scheduleForRemoval() {
 bool SceneElement::shouldBeRemoved() {
     return remove;
 }
+
+void SceneElement::beginContact(SceneElement* other) {}
+
+void SceneElement::endContact(SceneElement* other) {}

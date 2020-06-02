@@ -11,7 +11,7 @@
 using namespace std;
 
 /// Renseigne les éléments à mettre à jour et à afficher
-class Scene: public enable_shared_from_this<Scene> {
+class Scene: public enable_shared_from_this<Scene>, b2ContactListener {
 private:
     // valeurs recommandées dans la documentation de Box2D
     static constexpr int positionIterations = 3;
@@ -24,6 +24,9 @@ private:
     b2World physics{ b2Vec2_zero /*b2Vec2(100.0f, 0.0f) */ };
     vector<unique_ptr<SceneElement>> elements;
     sf::View renderView{sf::FloatRect(0.0f, 0.0f, 1600.0f, 900.0f)};
+
+    void BeginContact(b2Contact* contact) override;
+    void EndContact(b2Contact* pair) override;
 
 public:
     explicit Scene(unique_ptr<SceneElement> background);

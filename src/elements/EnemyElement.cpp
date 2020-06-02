@@ -3,6 +3,7 @@
 //
 
 #include "EnemyElement.h"
+#include "BoatElement.h"
 
 EnemyElement::EnemyElement(sf::RenderWindow& renderTarget, std::shared_ptr<sf::Texture> texture): renderTarget(renderTarget), texture(texture) {
     if(texture) sprite.setTexture(*texture);
@@ -23,4 +24,33 @@ void EnemyElement::render(sf::RenderWindow &target, float partialTick) {
 
 void EnemyElement::onAddition(Scene &scene) {
     this->scene = &scene;
+
+    b2BodyDef bodyDef;
+    bodyDef.userData = this;
+    bodyDef.type = b2_kinematicBody;
+    bodyDef.position.x = position.x;
+    bodyDef.position.y = position.y;
+
+    rigidbody = scene.getPhysicsWorld().CreateBody(&bodyDef);
+
+    b2PolygonShape shape;
+    shape.SetAsBox(10.0f, 10.0f);
+    b2FixtureDef fixtureDef;
+    fixtureDef.density = 1.0f;
+    fixtureDef.shape = &shape;
+    //fixtureDef.isSensor = true;
+    rigidbody->CreateFixture(&fixtureDef);
+}
+
+void EnemyElement::beginContact(SceneElement *other) {
+    if(auto* player = dynamic_cast<BoatElement*>(other)) {
+        // TODO: damage player
+        this->scheduleForRemoval();
+    }
+}
+
+EnemyElement::~EnemyElement() {
+    if(rigidbody && rigidbody->GetWorld()) {
+        rigidbody->GetWorld()->DestroyBody(rigidbody);
+    }
 }

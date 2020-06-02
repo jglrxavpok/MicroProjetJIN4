@@ -14,6 +14,8 @@ private:
     Scene* scene;
     sf::RenderWindow& renderTarget;
 
+    b2Body* rigidbody;
+
 public:
     explicit EnemyElement(sf::RenderWindow& renderTarget, std::shared_ptr<sf::Texture> texture);
 
@@ -22,4 +24,8 @@ public:
     void update(float elapsedTime) override;
 
     void render(sf::RenderWindow &target, float partialTick) override;
+
+    void beginContact(SceneElement *other) override;
+
+    ~EnemyElement();
 };

@@ -24,6 +24,7 @@ void BoatElement::onAddition(Scene &scene) {
     bodyDef.type = b2_dynamicBody;
     bodyDef.angularDamping = angularDamping;
     bodyDef.position.Set(200.0f, 450.0f);
+    bodyDef.userData = this;
     rigidbody = scene.getPhysicsWorld().CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;

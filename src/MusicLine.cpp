@@ -15,7 +15,6 @@ void MusicLine::addLine(float startX, float startY, float endX, float endY) {
     auto partReference = make_shared<MusicLinePart>(startX, startY, endX, endY);
     parts.emplace_back(partReference);
     scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), partReference, startX, startY, endX, endY));
-    updateGraph();
 }
 
 bool MusicLine::surrounds(unique_ptr<SceneElement>& element) {

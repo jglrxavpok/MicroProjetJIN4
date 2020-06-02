@@ -93,10 +93,7 @@ void Game::mouseReleased(int x, int y, sf::Mouse::Button button) {
     buttonPressed[button] = false;
 
     if(currentMusicLine) {
-        int cycles = currentMusicLine->countCycles();
-        if(cycles > 0) {
-            cout << "boum, " << cycles << " cycles!" << endl;
-        }
+        currentMusicLine->destroySurroundedEnemies();
     }
     currentMusicLine = nullptr;
 

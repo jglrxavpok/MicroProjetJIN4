@@ -47,9 +47,11 @@ void PlayerLineElement::update(float elapsedTime) {
 }
 
 void PlayerLineElement::render(sf::RenderWindow &target, float partialTick) {
+    int alpha = 255 * (life/MAX_LIFETIME);
+    sf::Color color(255,255,255, alpha);
     sf::Vertex line[] = {
-        sf::Vertex(sf::Vector2f(startX, startY)),
-        sf::Vertex(sf::Vector2f(endX, endY)),
+        sf::Vertex(sf::Vector2f(startX, startY), color),
+        sf::Vertex(sf::Vector2f(endX, endY), color),
     };
     target.draw(line, 2, sf::Lines);
 }

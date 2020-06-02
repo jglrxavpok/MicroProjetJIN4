@@ -10,10 +10,8 @@
 #include "MusicLinePart.h"
 
 class GraphCycle {
-private:
-    vector<sf::Vector2f> vertices;
-
 public:
+    vector<sf::Vector2f> vertices;
     explicit GraphCycle(vector<sf::Vector2f> vertices);
 };
 
@@ -37,6 +35,7 @@ private:
     void updateGraph();
 
     typedef struct {
+        int index;
         float x;
         float y;
         bool partOfCycle;
@@ -45,11 +44,12 @@ private:
         shared_ptr<MusicLinePart> secondLine;
     } vertex;
 
-    unique_ptr<GraphCycle> findCycle(vertex* start, map<vertex*, vector<vertex*>>& adjacency);
-    unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, map<vertex *, vertex *>& parents);
+    typedef map<int, vector<int>> adjacency_map;
+    unique_ptr<GraphCycle> findCycle(vertex* start, vector<vertex>& allVertices, adjacency_map& adjacency);
+    unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, vertex* secondParent, map<vertex *, vertex *>& parents);
 
     /// Connecte 'v' aux deux points les plus proches présents sur la ligne 'along'
-    void connectToClosest2(vertex* v, vector<vertex>& allVertices, map<vertex*, vector<vertex*>>& adjacency, const shared_ptr<MusicLinePart>& along);
+    void connectToClosest2(vertex* v, vector<vertex>& allVertices, adjacency_map& adjacency, const shared_ptr<MusicLinePart>& along);
 
 public:
     explicit MusicLine(unique_ptr<Scene>& scene);
@@ -63,6 +63,8 @@ public:
 
     int countParts();
     int countCycles();
+
+    void debugRender(sf::RenderWindow& target);
 
     ~MusicLine() = default;
 };

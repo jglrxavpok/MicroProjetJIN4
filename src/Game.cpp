@@ -59,6 +59,12 @@ void Game::render(sf::RenderWindow& renderTarget, float partialTick) {
 
     if(scene) {
         scene->renderAll(renderTarget, partialTick);
+
+        renderTarget.setView(scene->getRenderView());
+        if(currentMusicLine) {
+            currentMusicLine->debugRender(renderTarget);
+        }
+        renderTarget.setView(renderTarget.getDefaultView());
     }
 }
 

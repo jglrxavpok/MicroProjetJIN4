@@ -72,6 +72,7 @@ namespace myNameSpace {
         scene->addElement(move(enemy2));
         ASSERT_EQ(lineCount + 2, scene->getElements().size());
         line->destroySurroundedEnemies();
+        scene->updateAll(0.0f); // permet de nettoyer les éléments
         ASSERT_EQ(lineCount + 1, scene->getElements().size());
     }
 

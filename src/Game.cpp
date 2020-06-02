@@ -24,6 +24,9 @@ std::shared_ptr<sf::Texture> Game::loadTexture(std::string path) {
 
 Game::Game(sf::RenderWindow& window): renderTarget(window) {
     badGuyTexture = loadTexture("resources/textures/bad_guy.png");
+    singleNotesTexture = loadTexture("resources/textures/single_notes_spritesheet.png");
+    doubleNotesTexture = loadTexture("resources/textures/double_notes_spritesheet.png");
+
     unique_ptr<SceneElement> background = make_unique<LoopingBackground>(loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
 
@@ -106,7 +109,7 @@ void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
     auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
     lastX = coords.x;
     lastY = coords.y;
-    currentMusicLine = make_shared<MusicLine>(scene);
+    currentMusicLine = make_shared<MusicLine>(scene, singleNotesTexture, doubleNotesTexture);
 
     // TODO: propager l'event
 
@@ -142,7 +145,7 @@ void Game::mouseMoved(int x, int y) {
                 auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
                 float deltaX = endCoords.x - lastX;
                 float deltaY = endCoords.y - lastY;
-                if(deltaX*deltaX+deltaY*deltaY >= 20*20) { // plus de 20 pixels de distance
+                if(deltaX*deltaX+deltaY*deltaY >= 30*30) { // plus de 20 pixels de distance
                     if(currentMusicLine) {
                         currentMusicLine->addLine(lastX, lastY, endCoords.x, endCoords.y);
                     }

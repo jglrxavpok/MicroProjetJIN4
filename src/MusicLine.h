@@ -8,6 +8,7 @@
 #include "Scene.h"
 #include "elements/EnemyElement.h"
 #include "MusicLinePart.h"
+#include "RNG.h"
 
 class GraphCycle {
 private:
@@ -37,6 +38,11 @@ private:
     vector<weak_ptr<MusicLinePart>> parts;
     vector<unique_ptr<GraphCycle>> cycles;
 
+    shared_ptr<sf::Texture> singleNotesSpritesheet;
+    shared_ptr<sf::Texture> doubleNotesSpritesheet;
+
+    RNG rng{};
+
     void destroyEnemy(EnemyElement* enemy);
 
     /// mets à jour le graphe permettant de trouver les ennemis entourés
@@ -61,7 +67,7 @@ private:
     void connectToClosest2(vertex* v, vector<vertex>& allVertices, adjacency_map& adjacency, const shared_ptr<MusicLinePart>& along);
 
 public:
-    explicit MusicLine(unique_ptr<Scene>& scene);
+    explicit MusicLine(unique_ptr<Scene>& scene, shared_ptr<sf::Texture> singleNotesSpritesheet = nullptr, shared_ptr<sf::Texture> doubleNotesSpritesheet = nullptr);
     void addLine(float startX, float startY, float endX, float endY);
 
     /// Renvoies 'true' ssi cette ligne de musique entoure l'élement donné (ie cette ligne crée une boucle et que

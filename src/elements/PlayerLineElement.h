@@ -25,10 +25,15 @@ private:
 
     /// morceau de la ligne correspondant à cet élément. Permet à la MusicLine parente de savoir si cet élément a expiré
     std::shared_ptr<MusicLinePart> part;
+    std::shared_ptr<sf::Texture> spritesheet;
+    vector<sf::Sprite> sprites;
+    sf::Color noteColor{0,0,0,255};
+
+    constexpr static float SPRITE_WIDTH = 64.0f;
 
 public:
     constexpr static float MAX_LIFETIME = 5.0f; // 5s
-    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY);
+    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> = nullptr);
 
     void update(float elapsedTime) override;
 

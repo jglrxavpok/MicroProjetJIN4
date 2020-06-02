@@ -3,6 +3,7 @@
 //
 
 #include "math_help.h"
+#include "RNG.h"
 
 bool intersectionTest(float startX, float startY, float endX, float endY, float otherStartX, float otherStartY, float otherEndX, float otherEndY, sf::Vector2f& intersectionOut) {
     float determinant = (startX-endX) * (otherStartY - otherEndY) - (startY - endY) * (otherStartX - otherEndX);
@@ -20,4 +21,25 @@ bool intersectionTest(float startX, float startY, float endX, float endY, float 
         return true;
     }
     return false;
+}
+
+static RNG rng{};
+static std::vector<sf::Color> randomColors;
+
+void fillRandomColors() {
+    randomColors.push_back(sf::Color::Red);
+    randomColors.push_back(sf::Color::Yellow);
+    randomColors.push_back(sf::Color::Green);
+    randomColors.push_back(sf::Color::White);
+    randomColors.push_back(sf::Color::Cyan);
+    randomColors.push_back(sf::Color::Magenta);
+    randomColors.push_back(sf::Color::Black);
+    randomColors.push_back(sf::Color::Blue); // TODO: est ce que ça se voie par dessus l'eau?
+}
+
+sf::Color randomColor() {
+    if(randomColors.empty()) {
+        fillRandomColors();
+    }
+    return randomColors[rng.rand() * randomColors.size()];
 }

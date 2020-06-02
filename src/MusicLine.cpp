@@ -7,14 +7,16 @@
 #include "math_help.h"
 #include <queue>
 
-MusicLine::MusicLine(std::unique_ptr<Scene>& scene): scene(scene) {
+MusicLine::MusicLine(std::unique_ptr<Scene>& scene, std::shared_ptr<sf::Texture> singleNotesSpritesheet, std::shared_ptr<sf::Texture> doubleNotesSpritesheet):
+    scene(scene), singleNotesSpritesheet(std::move(singleNotesSpritesheet)), doubleNotesSpritesheet(std::move(doubleNotesSpritesheet)) {
 
 }
 
 void MusicLine::addLine(float startX, float startY, float endX, float endY) {
     auto partReference = make_shared<MusicLinePart>(startX, startY, endX, endY);
     parts.emplace_back(partReference);
-    scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), partReference, startX, startY, endX, endY));
+    bool isSingle = rng.rand() < 0.7f;
+    scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), partReference, startX, startY, endX, endY, isSingle ? singleNotesSpritesheet : doubleNotesSpritesheet));
 }
 
 bool MusicLine::surrounds(unique_ptr<SceneElement>& element) {

@@ -21,6 +21,8 @@ private:
     GameState state{10.0f};
 
     std::shared_ptr<sf::Texture> badGuyTexture = nullptr;
+    std::shared_ptr<sf::Texture> singleNotesTexture = nullptr;
+    std::shared_ptr<sf::Texture> doubleNotesTexture = nullptr;
 
     /// la ligne de musique en train d'être dessinée (null si le clic gauche n'est pas enfoncé)
     std::shared_ptr<MusicLine> currentMusicLine = nullptr;

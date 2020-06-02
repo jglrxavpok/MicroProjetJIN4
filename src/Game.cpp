@@ -1,18 +1,32 @@
 //
-// Created by jglrxavpok on 28/05/2020.
+// Created by jglrxavpok on 02/06/2020.
 //
 
-#include "elements/LoopingBackground.h"
-#include "elements/BoatElement.h"
-#include "elements/ShoreElement.h"
-#include "elements/PlayerLineElement.h"
 #include "Game.h"
-#include "Scene.h"
-#include <iostream>
-#include <elements/EnemyElement.h>
 
-#define _USE_MATH_DEFINES
-#include "math.h"
+Game::Game(sf::RenderWindow &window): renderTarget(window) {}
+
+void Game::update() {
+    if(currentSegment) {
+        currentSegment->update();
+    }
+}
+
+void Game::render(sf::RenderWindow &renderTarget, float partialTick) {
+    if(currentSegment) {
+        currentSegment->render(renderTarget, partialTick);
+    }
+}
+
+void Game::shutdown() {
+    if(currentSegment) {
+        currentSegment->shutdown();
+    }
+}
+
+sf::RenderWindow& Game::getRenderTarget() {
+    return renderTarget;
+}
 
 std::shared_ptr<sf::Texture> Game::loadTexture(std::string path) {
     std::shared_ptr<sf::Texture> tex = make_shared<sf::Texture>();
@@ -22,77 +36,19 @@ std::shared_ptr<sf::Texture> Game::loadTexture(std::string path) {
     return tex;
 }
 
-Game::Game(sf::RenderWindow& window): renderTarget(window) {
-    badGuyTexture = loadTexture("resources/textures/bad_guy.png");
-    singleNotesTexture = loadTexture("resources/textures/single_notes_spritesheet.png");
-    doubleNotesTexture = loadTexture("resources/textures/double_notes_spritesheet.png");
-
-    unique_ptr<SceneElement> background = make_unique<LoopingBackground>(loadTexture("resources/textures/boat_background.png"));
-    scene = make_unique<Scene>(move(background));
-
-    scene->addElement(make_unique<ShoreElement>(0.0f));
-    scene->addElement(make_unique<ShoreElement>(822.5f));
-    scene->addElement(make_unique<BoatElement>(state));
-}
-
-void Game::spawnEnemy() {
-    auto enemy = make_unique<EnemyElement>(renderTarget, badGuyTexture);
-    float centerY = rng.rand(ShoreElement::HEIGHT, 822.5f);
-    auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(1600-200, (int)centerY), scene->getRenderView());
-
-    enemy->getPosition() = coords;
-    scene->addElement(move(enemy));
-}
-
-void Game::update() {
-    if(state.isGameOver()) {
-        // TODO: switch to game over screen :c
+std::unique_ptr<sf::SoundBuffer> Game::loadBuffer(std::string path) {
+    std::unique_ptr<sf::SoundBuffer> buffer = std::make_unique< sf::SoundBuffer>();
+    if (!buffer->loadFromFile(path)) {
+        std::cout << "Impossible d'ouvrir le fichier : " << path << std::endl;
     }
-    if(scene) {
-        scene->updateAll(Game::TARGET_UPDATE_PERIOD);
-
-        time += Game::TARGET_UPDATE_PERIOD;
-
-        if(time >= ENEMY_SPAWN_PERIOD) {
-            spawnEnemy();
-            time -= ENEMY_SPAWN_PERIOD;
-        }
-    }
+    return buffer;
 }
 
-void Game::renderHealthBar() {
-    auto& view = renderTarget.getView();
-
-    sf::RectangleShape background(sf::Vector2f(view.getSize().x-40.0f, 50.0f));
-    background.setPosition(view.getSize().x/2.0f - background.getSize().x/2.0f, view.getSize().y-background.getSize().y-20.0f);
-    background.setFillColor(sf::Color(38,38,38,255));
-
-
-    float yPercent = 0.8f;
-    float xPercent = 0.95f;
-    sf::RectangleShape lifeBar(sf::Vector2f(background.getSize().x*xPercent*state.getLifeRatio(), background.getSize().y*yPercent));
-    lifeBar.setPosition(view.getSize().x/2.0f - background.getSize().x*xPercent/2.0f, background.getPosition().y+background.getSize().y*(1.0f-yPercent)/2.0f);
-    lifeBar.setFillColor(sf::Color(38,198,38,255));
-
-    renderTarget.draw(background);
-    renderTarget.draw(lifeBar);
-}
-
-void Game::render(sf::RenderWindow& renderTarget, float partialTick) {
-    renderTarget.clear(sf::Color::White);
-
-    if(scene) {
-        scene->renderAll(renderTarget, partialTick);
-
-        renderTarget.setView(scene->getRenderView());
-        if(currentMusicLine) {
-            currentMusicLine->debugRender(renderTarget);
-        }
-        renderTarget.setView(renderTarget.getDefaultView());
-    }
-
-    // render UI
-    renderHealthBar();
+std::shared_ptr<sf::Sound> Game::loadSound(std::unique_ptr<sf::SoundBuffer>& buffer) {
+    std::shared_ptr<sf::Sound> sound = std::make_shared<sf::Sound>();
+    sound->setBuffer(*buffer);
+    sound->setVolume(100.f);
+    return sound;
 }
 
 void Game::updateMousePos(int x, int y) {
@@ -100,31 +56,33 @@ void Game::updateMousePos(int x, int y) {
     mousePosY = y;
 }
 
-float lastX = 0;
-float lastY = 0;
-
 void Game::mousePressed(int x, int y, sf::Mouse::Button button) {
     updateMousePos(x, y);
     buttonPressed[button] = true;
-    auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
-    lastX = coords.x;
-    lastY = coords.y;
-    currentMusicLine = make_shared<MusicLine>(scene, singleNotesTexture, doubleNotesTexture);
+    if(currentSegment) {
+        currentSegment->mousePressed(x, y, button);
+    }
+}
 
-    // TODO: propager l'event
+void Game::keyPressed(sf::Event::KeyEvent event) {
+    if(currentSegment) {
+        currentSegment->keyPressed(event);
+    }
+}
 
+void Game::keyReleased(sf::Event::KeyEvent event) {
+    if(currentSegment) {
+        currentSegment->keyReleased(event);
+    }
 }
 
 void Game::mouseReleased(int x, int y, sf::Mouse::Button button) {
     updateMousePos(x, y);
     buttonPressed[button] = false;
 
-    if(currentMusicLine) {
-        currentMusicLine->destroySurroundedEnemies();
+    if(currentSegment) {
+        currentSegment->mouseReleased(x,y,button);
     }
-    currentMusicLine = nullptr;
-
-    // TODO: propager l'event
 }
 
 void Game::mouseMoved(int x, int y) {
@@ -133,31 +91,22 @@ void Game::mouseMoved(int x, int y) {
     int dx = prevX-x;
     int dy = prevY-y;
     updateMousePos(x, y);
-    // TODO: propager l'event
+    if(currentSegment) {
+        currentSegment->mouseMoved(x,y);
+    }
 
-    for (int buttonIndex = 0; buttonIndex < sf::Mouse::Button::ButtonCount; buttonIndex++) {
-        auto button = (sf::Mouse::Button) buttonIndex;
-        if(buttonPressed[button]) {
-            // TODO: propager l'event de drag
-
-            // FIXME: tmp
-            if(button == sf::Mouse::Left) {
-                auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
-                float deltaX = endCoords.x - lastX;
-                float deltaY = endCoords.y - lastY;
-                if(deltaX*deltaX+deltaY*deltaY >= 30*30) { // plus de 20 pixels de distance
-                    if(currentMusicLine) {
-                        currentMusicLine->addLine(lastX, lastY, endCoords.x, endCoords.y);
-                    }
-
-                    lastX = endCoords.x;
-                    lastY = endCoords.y;
+    if(currentSegment) {
+        for (int buttonIndex = 0; buttonIndex < sf::Mouse::Button::ButtonCount; buttonIndex++) {
+            auto button = (sf::Mouse::Button) buttonIndex;
+            if (buttonPressed[button]) {
+                if (button == sf::Mouse::Left) {
+                    currentSegment->mouseDrag(x, y, dx, dy, button);
                 }
             }
         }
     }
 }
 
-void Game::shutdown() {
-
+void Game::setGameplay(unique_ptr<GameplaySegment> gameplay) {
+    currentSegment = move(gameplay);
 }

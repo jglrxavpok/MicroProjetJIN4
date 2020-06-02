@@ -1,36 +1,28 @@
 //
-// Created by jglrxavpok on 28/05/2020.
+// Created by jglrxavpok&gwenser
 //
+
 #pragma once
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <memory>
 #include "Scene.h"
 #include "RNG.h"
 #include "MusicLine.h"
 #include "GameState.h"
+#include "GameplaySegment.h"
+
 
 class Game {
 private:
-    std::unique_ptr<Scene> scene = nullptr;
-    float time = 0.0f;
     int mousePosX;
     int mousePosY;
     bool buttonPressed[sf::Mouse::ButtonCount] = {false};
     sf::RenderWindow& renderTarget;
-    RNG rng{};
-    GameState state{10.0f};
+    unique_ptr<GameplaySegment> currentSegment;
 
-    std::shared_ptr<sf::Texture> badGuyTexture = nullptr;
-    std::shared_ptr<sf::Texture> singleNotesTexture = nullptr;
-    std::shared_ptr<sf::Texture> doubleNotesTexture = nullptr;
-
-    /// la ligne de musique en train d'être dessinée (null si le clic gauche n'est pas enfoncé)
-    std::shared_ptr<MusicLine> currentMusicLine = nullptr;
-
-    constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
-
-    void spawnEnemy();
-    void renderHealthBar();
+    void updateMousePos(int x, int y);
 
 public:
     /// 60Hz
@@ -59,7 +51,20 @@ public:
     /// Appelé lorsque la souris est déplacée
     void mouseMoved(int x, int y);
 
-    void updateMousePos(int x, int y);
+    void keyPressed(sf::Event::KeyEvent event);
 
-    std::shared_ptr<sf::Texture> loadTexture(std::string path);
+    void keyReleased(sf::Event::KeyEvent event);
+
+    ///Pour charger les buffer pour les sons
+    static std::unique_ptr<sf::SoundBuffer> loadBuffer(std::string path);
+
+    ///Pour charger les sons
+    static std::shared_ptr<sf::Sound> loadSound(std::unique_ptr<sf::SoundBuffer>& buffer);
+
+    ///Pour charger des images
+    static std::shared_ptr<sf::Texture> loadTexture(std::string path);
+
+    sf::RenderWindow& getRenderTarget();
+
+    void setGameplay(unique_ptr<GameplaySegment> gameplay);
 };

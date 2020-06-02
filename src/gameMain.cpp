@@ -4,6 +4,9 @@
 #include <imgui-SFML.h>
 #include <tmxlite/Map.hpp>
 #include <box2d/b2_body.h>
+#include <iostream>
+#include "BoatSegment.h"
+#include "MusicSegment.h"
 
 using namespace std;
 
@@ -32,6 +35,7 @@ int gameMain()
     float lag = 0.0; // in ms
 
     Game game{window};
+    game.setGameplay(move(make_unique<MusicSegment>(game)));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();
@@ -48,7 +52,6 @@ int gameMain()
 
         ImGui::SFML::Update(window, dt);
         // TODO: rendu ImGui
-
         game.render(window, lag / Game::TARGET_UPDATE_PERIOD);
         ImGui::SFML::Render(window);
         window.display();
@@ -91,6 +94,10 @@ void processEvents(Game& game, sf::RenderWindow& window) {
                 game.mouseMoved(x, y);
                 break;
             }
+
+            case sf::Event::KeyPressed:
+                game.keyPressed(event.key);
+                break;
         }
     }
 }

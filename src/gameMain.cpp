@@ -72,25 +72,25 @@ void processEvents(sf::RenderWindow& window, Game& game) {
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::A) {
                     //std::cout << "Je suis sensé jouer un son" << std::endl;
-                    game.playSound(Sound::A);
+                    game.playSound("A");
                 }
                 if (event.key.code == sf::Keyboard::B) {
-                    game.playSound(Sound::B);
+                    game.playSound("B");
                 }
                 if (event.key.code == sf::Keyboard::C) {
-                    game.playSound(Sound::C);
+                    game.playSound("C");
                 }
                 if (event.key.code == sf::Keyboard::D) {
-                    game.playSound(Sound::D);
+                    game.playSound("D");
                 }
                 if (event.key.code == sf::Keyboard::E) {
-                    game.playSound(Sound::E);
+                    game.playSound("E");
                 }
                 if (event.key.code == sf::Keyboard::F) {
-                    game.playSound(Sound::F);
+                    game.playSound("F");
                 }
                 if (event.key.code == sf::Keyboard::G) {
-                    game.playSound(Sound::G);
+                    game.playSound("G");
                 }
                 break;
         }

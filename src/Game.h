@@ -6,29 +6,24 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-enum class Sound {A, B, C, D, E, F, G };
+enum Sound {A, B, C, D, E, F, G };
 
 class Game{
 private:
-	std::shared_ptr<sf::Sound> soundA;
-	std::shared_ptr<sf::Sound> soundB;
-	std::shared_ptr<sf::Sound> soundC;
-	std::shared_ptr<sf::Sound> soundD;
-	std::shared_ptr<sf::Sound> soundE;
-	std::shared_ptr<sf::Sound> soundF;
-	std::shared_ptr<sf::Sound> soundG;
+	std::vector<Sound> music{ Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G, Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G };
+	std::map<Sound, std::shared_ptr<sf::Sound>> sounds;
 
-	std::unique_ptr<sf::SoundBuffer> bufferA;
-	std::unique_ptr<sf::SoundBuffer> bufferB;
-	std::unique_ptr<sf::SoundBuffer> bufferC;
-	std::unique_ptr<sf::SoundBuffer> bufferD;
-	std::unique_ptr<sf::SoundBuffer> bufferE;
-	std::unique_ptr<sf::SoundBuffer> bufferF;
-	std::unique_ptr<sf::SoundBuffer> bufferG;
+	std::map<Sound, std::unique_ptr<sf::SoundBuffer>> buffers;
 
 public:
+	///Pour charger les buffer pour les sons
+	std::unique_ptr<sf::SoundBuffer> loadBuffer(std::string path);
+
 	///Pour charger les sons
-	std::shared_ptr<sf::Sound> loadSound(std::string path);
+	std::shared_ptr<sf::Sound> loadSound(std::unique_ptr<sf::SoundBuffer>& buffer);
+
+	///Pour charger des images
+	std::shared_ptr<sf::Image> Game::loadImage(std::string path);
 
 	///initialisation chargement des textures
 	Game();
@@ -44,5 +39,4 @@ public:
 	/// @param partialTick nombre entre 0 et 1 pour donner la progression entre deux ticks
 	/// (permet d'avoir des animations propres même si update est appelé à un rythme pas suffisant pour cela, par exemple 10Hz)
 	void render(sf::RenderWindow& renderTarget, float partialTick);
-
 };

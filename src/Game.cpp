@@ -33,7 +33,7 @@ Game::Game(sf::RenderWindow& window): renderTarget(window) {
 }
 
 void Game::spawnEnemy() {
-    auto enemy = make_unique<EnemyElement>(badGuyTexture);
+    auto enemy = make_unique<EnemyElement>(renderTarget, badGuyTexture);
     float centerY = rng.rand(ShoreElement::HEIGHT, 822.5f);
     auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(1600-200, (int)centerY), scene->getRenderView());
 

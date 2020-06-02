@@ -5,14 +5,19 @@
 #pragma once
 #include <memory>
 #include "SceneElement.h"
+#include "Scene.h"
 
 class EnemyElement: public SceneElement {
 private:
     std::shared_ptr<sf::Texture> texture;
     sf::Sprite sprite;
+    Scene* scene;
+    sf::RenderWindow& renderTarget;
 
 public:
-    explicit EnemyElement(std::shared_ptr<sf::Texture> texture);
+    explicit EnemyElement(sf::RenderWindow& renderTarget, std::shared_ptr<sf::Texture> texture);
+
+    void onAddition(Scene &scene) override;
 
     void update(float elapsedTime) override;
 

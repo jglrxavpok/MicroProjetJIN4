@@ -98,6 +98,10 @@ void processEvents(Game& game, sf::RenderWindow& window) {
             case sf::Event::KeyPressed:
                 game.keyPressed(event.key);
                 break;
+
+            case sf::Event::KeyReleased:
+                game.keyReleased(event.key);
+                break;
         }
     }
 }

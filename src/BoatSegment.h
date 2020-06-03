@@ -29,7 +29,6 @@ private:
 
     b2Body* levelCollisions;
 
-    void spawnEnemy();
     void renderHealthBar();
 
     void loadLayer(tmx::Layer& layer);

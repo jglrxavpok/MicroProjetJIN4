@@ -4,7 +4,6 @@
 
 #include "elements/LoopingBackground.h"
 #include "elements/BoatElement.h"
-#include "elements/ShoreElement.h"
 #include "elements/PlayerLineElement.h"
 #include "BoatSegment.h"
 #include <tmxlite/Map.hpp>
@@ -74,6 +73,13 @@ void BoatSegment::loadCollision(const tmx::Object& obj) {
             break;
         }
 
+        case tmx::Object::Shape::Polygon: {
+            for(const auto& p : obj.getPoints()) {
+                shapePolygon.emplace_back(p.x, p.y);
+            }
+            break;
+        }
+
         default:
             cerr << "Unknown shape for tmx::Object used as collision: " << (int)obj.getShape() << endl;
             assert(false); // unknown shape
@@ -84,15 +90,6 @@ void BoatSegment::loadCollision(const tmx::Object& obj) {
     fixture.shape = &shape;
     fixture.density = 1.0f;
     levelCollisions->CreateFixture(&fixture);
-}
-
-void BoatSegment::spawnEnemy() {
-    auto enemy = make_unique<EnemyElement>(renderTarget, badGuyTexture);
-    float centerY = rng.rand(ShoreElement::HEIGHT, 822.5f);
-    auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(1600-200, (int)centerY), scene->getRenderView());
-
-    enemy->getPosition() = coords;
-    scene->addElement(move(enemy));
 }
 
 void BoatSegment::update() {

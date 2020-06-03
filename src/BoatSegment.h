@@ -11,6 +11,8 @@
 #include "GameState.h"
 #include "GameplaySegment.h"
 #include "Game.h"
+#include <tmxlite/Object.hpp>
+#include <tmxlite/Layer.hpp>
 
 class BoatSegment: public GameplaySegment {
 private:
@@ -25,8 +27,13 @@ private:
 
     constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
 
+    b2Body* levelCollisions;
+
     void spawnEnemy();
     void renderHealthBar();
+
+    void loadLayer(tmx::Layer& layer);
+    void loadCollision(const tmx::Object& obj);
 
 public:
     /// 60Hz
@@ -53,4 +60,6 @@ public:
     void mouseDrag(int x, int y, int dx, int dy, sf::Mouse::Button button) override;
 
     void shutdown() override;
+
+    ~BoatSegment();
 };

@@ -1,4 +1,4 @@
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS *.h *.cpp)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS *.h *.cpp *.hpp)
 
 add_library(src ${SOURCES})
 target_include_directories(src PUBLIC ./)

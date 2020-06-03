@@ -35,7 +35,7 @@ int gameMain()
     float lag = 0.0; // in ms
 
     Game game{window};
-    game.setGameplay(move(make_unique<MusicSegment>(game)));
+    game.setGameplay(move(make_unique<BoatSegment>(game)));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

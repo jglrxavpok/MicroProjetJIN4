@@ -7,6 +7,10 @@
 #include "elements/ShoreElement.h"
 #include "elements/PlayerLineElement.h"
 #include "BoatSegment.h"
+#include <tmxlite/Map.hpp>
+#include <tmxlite/LayerGroup.hpp>
+#include <tmxlite/ObjectGroup.hpp>
+#include <tmxlite/ImageLayer.hpp>
 
 BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     badGuyTexture = Game::loadTexture("resources/textures/bad_guy.png");
@@ -16,9 +20,70 @@ BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     unique_ptr<SceneElement> background = make_unique<LoopingBackground>(Game::loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
 
-    scene->addElement(make_unique<ShoreElement>(0.0f));
-    scene->addElement(make_unique<ShoreElement>(822.5f));
     scene->addElement(make_unique<BoatElement>(state));
+
+    tmx::Map map;
+    map.load("resources/maps/styx.tmx");
+
+    b2BodyDef levelCollisionsDef;
+    levelCollisionsDef.type = b2_staticBody;
+    levelCollisions = scene->getPhysicsWorld().CreateBody(&levelCollisionsDef);
+
+    for(const auto& layer : map.getLayers()) {
+        loadLayer(*layer);
+    }
+}
+
+void BoatSegment::loadLayer(tmx::Layer &layer) {
+    if(layer.getType() == tmx::Layer::Type::Object) {
+        auto& objects = layer.getLayerAs<tmx::ObjectGroup>();
+        for(auto& object : objects.getObjects()) {
+            const string& type = object.getType();
+            if(type == "collision") {
+                loadCollision(object);
+            } else if(type == "enemy") {
+                auto enemy = make_unique<EnemyElement>(renderTarget, badGuyTexture);
+                enemy->getPosition().x = object.getPosition().x;
+                enemy->getPosition().y = object.getPosition().y;
+                scene->addElement(move(enemy));
+            }
+            // TODO: obstacles, finish line, etc.
+        }
+    } else if(layer.getType() == tmx::Layer::Type::Group) {
+        auto& group = layer.getLayerAs<tmx::LayerGroup>();
+        for(const auto& l : group.getLayers()) {
+            loadLayer(*l);
+        }
+    } else if(layer.getType() == tmx::Layer::Type::Image) {
+        // TODO
+    }
+}
+
+void BoatSegment::loadCollision(const tmx::Object& obj) {
+    // ajout de la forme de collision au body 'levelCollisions'
+
+    b2PolygonShape shape;
+    vector<b2Vec2> shapePolygon;
+    switch(obj.getShape()) {
+        case tmx::Object::Shape::Rectangle: {
+            auto& aabb = obj.getAABB();
+            shapePolygon.emplace_back(aabb.left, aabb.top);
+            shapePolygon.emplace_back(aabb.left+aabb.width, aabb.top);
+            shapePolygon.emplace_back(aabb.left+aabb.width, aabb.top+aabb.height);
+            shapePolygon.emplace_back(aabb.left, aabb.top+aabb.height);
+            break;
+        }
+
+        default:
+            cerr << "Unknown shape for tmx::Object used as collision: " << (int)obj.getShape() << endl;
+            assert(false); // unknown shape
+    }
+    shape.Set(shapePolygon.data(), shapePolygon.size());
+
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+    fixture.density = 1.0f;
+    levelCollisions->CreateFixture(&fixture);
 }
 
 void BoatSegment::spawnEnemy() {
@@ -40,7 +105,7 @@ void BoatSegment::update() {
         time += Game::TARGET_UPDATE_PERIOD;
 
         if(time >= ENEMY_SPAWN_PERIOD) {
-            spawnEnemy();
+        //    spawnEnemy();
             time -= ENEMY_SPAWN_PERIOD;
         }
     }
@@ -116,4 +181,8 @@ void BoatSegment::mouseDrag(int x, int y, int dx, int dy, sf::Mouse::Button butt
 
 void BoatSegment::shutdown() {
 
+}
+
+BoatSegment::~BoatSegment() {
+    scene->getPhysicsWorld().DestroyBody(levelCollisions);
 }

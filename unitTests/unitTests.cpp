@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "MusicLine.h"
 
+#define M_PI 3.1415926535
+
 namespace myNameSpace {
 
     TEST(TestMusicLine, TestDestructionWhenChildrenAreDead) {
@@ -60,9 +62,9 @@ namespace myNameSpace {
         line->addLine(0.5f, 0.5f, 0.0f, 10.0f);// on force une intersection
 
         ASSERT_EQ(1, line->countCycles());
-
-        unique_ptr<SceneElement> enemy1 = make_unique<EnemyElement>(nullptr);
-        unique_ptr<SceneElement> enemy2 = make_unique<EnemyElement>(nullptr);
+        sf::RenderWindow testWindow;
+        unique_ptr<SceneElement> enemy1 = make_unique<EnemyElement>(testWindow, nullptr);
+        unique_ptr<SceneElement> enemy2 = make_unique<EnemyElement>(testWindow, nullptr);
         enemy2->getPosition() = sf::Vector2f(100.0f, 100.0f); // outside of circle
 
         ASSERT_TRUE(line->surrounds(enemy1));

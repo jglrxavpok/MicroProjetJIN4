@@ -64,16 +64,16 @@ void MusicLine::updateGraph() {
 
         // chaque ligne enregistre son point de fin, sauf pour la première qui enregistre aussi son point de départ
         if(i == 0) {
-            vertices.push_back({.index = static_cast<int>(vertices.size()), .x = l1->startX, .y = l1->startY, .partOfCycle = false, .value = 0, .firstLine=nullptr, .secondLine = l1});
+            vertices.push_back({/*.index =*/ static_cast<int>(vertices.size()), /*.x =*/ l1->startX, /*.y =*/ l1->startY, /*.partOfCycle =*/ false, /*.value =*/ 0, /*.firstLine=*/nullptr, /*.secondLine =*/ l1});
         }
         if(i < parts.size()-1) {
             auto& wl2 = parts[i+1];
             auto l2 = wl2.lock();
             if(l2) {
-                vertices.push_back({.index = static_cast<int>(vertices.size()), .x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .firstLine=l1, .secondLine = l2});
+                vertices.push_back({/*.index =*/ static_cast<int>(vertices.size()), /*.x =*/ l1->endX, /*.y =*/ l1->endY, /*.partOfCycle =*/ false, /*.value =*/ 0, /*.firstLine=*/l1, /*.secondLine =*/ l2});
             }
         } else {
-            vertices.push_back({.index = static_cast<int>(vertices.size()), .x = l1->endX, .y = l1->endY, .partOfCycle = false, .value = 0, .firstLine=l1, .secondLine = nullptr});
+            vertices.push_back({/*.index =*/ static_cast<int>(vertices.size()), /*.x =*/ l1->endX, /*.y =*/ l1->endY, /*.partOfCycle =*/ false, /*.value =*/ 0, /*.firstLine=*/l1, /*.secondLine =*/ nullptr});
         }
 
         // lie les deux derniers sommets
@@ -103,7 +103,7 @@ void MusicLine::updateGraph() {
                 alreadyChecked[{ minIndex, maxIndex }] = true;
                 sf::Vector2f intersectionPoint(0,0);
                 if(l1->intersects(*l2, intersectionPoint)) {
-                    vertices.push_back({.index = static_cast<int>(vertices.size()), .x = intersectionPoint.x, .y = intersectionPoint.y, .partOfCycle = false, .value = 0, .firstLine=nullptr, .secondLine=nullptr}); // origine mise à nullptr pour que connectToClosest2 ne connecte pas ce point à lui-même
+                    vertices.push_back({/*.index =*/ static_cast<int>(vertices.size()), /*.x =*/ intersectionPoint.x, /*.y =*/ intersectionPoint.y, /*.partOfCycle =*/ false, /*.value =*/ 0, /*.firstLine=*/nullptr, /*.secondLine=*/nullptr}); // origine mise à nullptr pour que connectToClosest2 ne connecte pas ce point à lui-même
                     auto* newVertex = &vertices[vertices.size()-1];
                     connectToClosest2(newVertex, vertices, adjacency, l1);
                     connectToClosest2(newVertex, vertices, adjacency, l2);

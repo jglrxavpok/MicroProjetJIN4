@@ -22,16 +22,24 @@ void MusicSegment::playSound(std::string note) {
 }
 
 void MusicSegment::update() {
-    // TODO
+    ticks++;
+    this->playMusic();
 }
 
 void MusicSegment::playMusic() {
-    //music
+    if (notePlay != ticks / TEMPO && notePlay < music.size()) {
+        notes[music[notePlay]]->play();
+        lastPressKey = notes[music[notePlay]];
+        notePlay++;
+    }
 }
 
 void MusicSegment::render(sf::RenderWindow& renderTarget, float partialTick) {
     renderTarget.clear(sf::Color::White);
     renderTarget.draw(keyBoardSprite);
+    if (lastPressKey) {
+        lastPressKey->render(renderTarget, partialTick, keySprite, noKeyImage);
+    }
     renderTarget.draw(keySprite);
 }
 

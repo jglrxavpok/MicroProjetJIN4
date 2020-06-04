@@ -11,6 +11,8 @@
 #include "GameplaySegment.h"
 #include "Game.h"
 
+#define TEMPO 100
+
 class MusicSegment: public GameplaySegment {
 public:
     ///Pour rien afficher sur le clavier utiliser cette texture pour le sprite "keySprite"
@@ -20,7 +22,7 @@ private:
     std::vector<std::string> names = { "A", "B", "C", "D", "E", "F", "G" };
 
     ///Musique 1
-    ///std::vector<Sound> music{ Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G, Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G };
+    std::vector<std::string> music{ "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G", "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G" };
 
     ///Image de fond du clavier dans sa globalité
     std::shared_ptr<sf::Texture> keyboardImage;
@@ -32,6 +34,8 @@ private:
 
     sf::Sprite keySprite;
     sf::Sprite keyBoardSprite;
+    int notePlay = 0;
+    int ticks = 0;
 
 public:
     ///initialisation chargement des textures

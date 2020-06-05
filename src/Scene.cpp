@@ -3,6 +3,7 @@
 //
 
 #include <elements/LoopingBackground.h>
+#include <elements/BoatElement.h>
 #include <functional>
 #include "Scene.h"
 
@@ -39,6 +40,12 @@ void Scene::updateAll(float elapsedTime) {
 }
 
 void Scene::addElement(unique_ptr<SceneElement>&& element) {
+    // on enregistre le dernier joueur ajouté à la scène pour pouvoir l'utiliser dans getPlayer()
+    // cf. lastPlayerAdded
+    if(auto* player = dynamic_cast<BoatElement*>(element.get())) {
+        lastPlayerAdded = player;
+    }
+
     element->onAddition(*this);
     elements.push_back(move(element));
 }
@@ -59,6 +66,13 @@ vector<unique_ptr<SceneElement>>& Scene::getElements() {
     return elements;
 }
 
+BoatElement& Scene::getPlayer() {
+    if(lastPlayerAdded) {
+        return *lastPlayerAdded;
+    }
+    throw std::logic_error("Called getPlayer while none has been added");
+}
+
 template<typename Callback>
 void handleContact(b2Contact* contact, Callback callback) {
     b2Fixture* fixtureA = contact->GetFixtureA();
@@ -77,10 +91,22 @@ void handleContact(b2Contact* contact, Callback callback) {
     }
 }
 
+Scene::~Scene() {
+    propagateContacts = false;
+}
+
 void Scene::BeginContact(b2Contact *contact) {
-    handleContact(contact, [](SceneElement* a, SceneElement* b) { a->beginContact(b); b->beginContact(a); });
+    if(propagateContacts) {
+        handleContact(contact, [](SceneElement* a, SceneElement* b) { a->beginContact(b); b->beginContact(a); });
+    }
 }
 
 void Scene::EndContact(b2Contact *contact) {
-    handleContact(contact, [](SceneElement* a, SceneElement* b) { a->endContact(b); b->endContact(a); });
+    if(propagateContacts) {
+        handleContact(contact, [](SceneElement* a, SceneElement* b) { a->endContact(b); b->endContact(a); });
+    }
+}
+
+void Scene::disableContactPropagationForTesting() {
+    propagateContacts = false;
 }

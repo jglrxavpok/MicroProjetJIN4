@@ -27,5 +27,5 @@ public:
 
     void beginContact(SceneElement *other) override;
 
-    ~EnemyElement();
+    ~EnemyElement() override;
 };

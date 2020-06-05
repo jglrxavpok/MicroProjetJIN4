@@ -15,6 +15,28 @@ void EnemyElement::update(float elapsedTime) {
         // on retire les ennemis qui sont sortis de l'écran
         scheduleForRemoval();
     }
+
+    if(rigidbody) {
+        auto transform = rigidbody->GetTransform();
+        position.x = transform.p.x;
+        position.y = transform.p.y;
+
+        // on ne bouge que si le joueur peut voir l'ennemi, c'est pas juste sinon
+        if(cameraCoords.x > 0 && cameraCoords.x < scene->getRenderView().getSize().x
+        && cameraCoords.y > 0 && cameraCoords.y < scene->getRenderView().getSize().y) {
+            // approche l'ennemi du joueur
+            BoatElement& player = scene->getPlayer();
+            b2Vec2 force;
+            const float intensity = 100.0f * rigidbody->GetMass();
+            float dx = getPosition().x - player.getPosition().x;
+            float dy = getPosition().y - player.getPosition().y;
+            force.x = -dx;
+            force.y = -dy;
+            force.Normalize();
+            force *= intensity;
+            rigidbody->ApplyForceToCenter(force, true);
+        }
+    }
 }
 
 void EnemyElement::render(sf::RenderWindow &target, float partialTick) {
@@ -27,7 +49,7 @@ void EnemyElement::onAddition(Scene &scene) {
 
     b2BodyDef bodyDef;
     bodyDef.userData = this;
-    bodyDef.type = b2_kinematicBody;
+    bodyDef.type = b2_dynamicBody;
     bodyDef.position.x = position.x;
     bodyDef.position.y = position.y;
 
@@ -38,7 +60,6 @@ void EnemyElement::onAddition(Scene &scene) {
     b2FixtureDef fixtureDef;
     fixtureDef.density = 1.0f;
     fixtureDef.shape = &shape;
-    //fixtureDef.isSensor = true;
     rigidbody->CreateFixture(&fixtureDef);
 }
 

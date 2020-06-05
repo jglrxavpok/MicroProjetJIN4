@@ -33,8 +33,8 @@ void fillRandomColors() {
     randomColors.push_back(sf::Color::White);
     randomColors.push_back(sf::Color::Cyan);
     randomColors.push_back(sf::Color::Magenta);
-    randomColors.push_back(sf::Color::Black);
-    randomColors.push_back(sf::Color::Blue); // TODO: est ce que ça se voie par dessus l'eau?
+    //randomColors.push_back(sf::Color::Black);
+    //randomColors.push_back(sf::Color::Blue);
 }
 
 sf::Color randomColor() {

@@ -9,7 +9,7 @@
 #include <memory>
 #include "MusicLine.h"
 
-class PlayerLineElement: public SceneElement {
+class MusicLineElement: public SceneElement {
 private:
     float length;
     float startX;
@@ -33,7 +33,7 @@ private:
 
 public:
     constexpr static float MAX_LIFETIME = 5.0f; // 5s
-    explicit PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> = nullptr);
+    explicit MusicLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> = nullptr);
 
     void update(float elapsedTime) override;
 
@@ -41,5 +41,10 @@ public:
 
     void onAddition(Scene &scene) override;
 
-    ~PlayerLineElement() override;
+    ~MusicLineElement() override;
+
+    void beginContact(SceneElement *other) override;
+
+    /// Appelé lorsqu'une ligne se brise sur un ennemi
+    void breakPart();
 };

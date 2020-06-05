@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <elements/PlayerLineElement.h>
+#include <elements/MusicLineElement.h>
 #include <elements/EnemyElement.h>
 #include "Scene.h"
 #include "MusicLine.h"
@@ -25,11 +25,11 @@ namespace myNameSpace {
         ASSERT_FALSE(weakLine.expired()); // le pointeur doit rester valide à cet instant, les enfants ont encore la référence
 
         // on avance dans le temps, les enfants doivent toujours être vivants
-        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        scene->updateAll(MusicLineElement::MAX_LIFETIME / 2.0f);
         ASSERT_FALSE(weakLine.expired()); // le pointeur doit rester valide à cet instant, les enfants ont toujours et encore la référence
 
         // on fait mourir les enfants
-        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        scene->updateAll(MusicLineElement::MAX_LIFETIME / 2.0f);
 
         // le weak pointeur doit maintenant être invalide
         ASSERT_TRUE(weakLine.expired());
@@ -38,6 +38,7 @@ namespace myNameSpace {
     TEST(TestMusicLine, TestSurroundEnemies) {
         auto scene = make_unique<Scene>(nullptr);
         auto line = make_shared<MusicLine>(scene);
+        scene->disableContactPropagationForTesting();
 
         int steps = 6;
         float ang = 0.0f;
@@ -85,9 +86,9 @@ namespace myNameSpace {
 
         line->addLine(0,0,0,0);
         ASSERT_EQ(1, line->countParts());
-        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        scene->updateAll(MusicLineElement::MAX_LIFETIME / 2.0f);
         ASSERT_EQ(1, line->countParts());
-        scene->updateAll(PlayerLineElement::MAX_LIFETIME/2.0f);
+        scene->updateAll(MusicLineElement::MAX_LIFETIME / 2.0f);
         ASSERT_EQ(0, line->countParts());
     }
 }

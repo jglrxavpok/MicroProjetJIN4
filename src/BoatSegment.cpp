@@ -4,7 +4,7 @@
 
 #include "elements/LoopingBackground.h"
 #include "elements/BoatElement.h"
-#include "elements/PlayerLineElement.h"
+#include "elements/MusicLineElement.h"
 #include "BoatSegment.h"
 #include <tmxlite/Map.hpp>
 #include <tmxlite/LayerGroup.hpp>
@@ -96,15 +96,16 @@ void BoatSegment::update() {
     if(state.isGameOver()) {
         // TODO: switch to game over screen :c
     }
+
+    if(currentMusicLine) {
+        if(currentMusicLine->isBroken()) {
+            currentMusicLine = nullptr;
+        }
+    }
     if(scene) {
         scene->updateAll(Game::TARGET_UPDATE_PERIOD);
 
         time += Game::TARGET_UPDATE_PERIOD;
-
-        if(time >= ENEMY_SPAWN_PERIOD) {
-        //    spawnEnemy();
-            time -= ENEMY_SPAWN_PERIOD;
-        }
     }
 }
 
@@ -161,14 +162,15 @@ void BoatSegment::mouseReleased(int x, int y, sf::Mouse::Button button) {
 }
 
 void BoatSegment::mouseDrag(int x, int y, int dx, int dy, sf::Mouse::Button button) {
+    if(!currentMusicLine) {
+        return;
+    }
     if(button == sf::Mouse::Left) {
         auto endCoords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
         float deltaX = endCoords.x - lastX;
         float deltaY = endCoords.y - lastY;
         if(deltaX*deltaX+deltaY*deltaY >= 30*30) { // plus de 20 pixels de distance
-            if(currentMusicLine) {
-                currentMusicLine->addLine(lastX, lastY, endCoords.x, endCoords.y);
-            }
+            currentMusicLine->addLine(lastX, lastY, endCoords.x, endCoords.y);
 
             lastX = endCoords.x;
             lastY = endCoords.y;

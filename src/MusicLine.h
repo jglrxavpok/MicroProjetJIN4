@@ -43,12 +43,7 @@ private:
 
     RNG rng{};
 
-    void destroyEnemy(EnemyElement* enemy);
-
-    /// mets à jour le graphe permettant de trouver les ennemis entourés
-    /// Prends aussi en compte les lignes qui ont pu expirer
-    void updateGraph();
-
+    // TODO: améliorer le code pour la recherche de cycle
     typedef struct {
         int index;
         float x;
@@ -60,12 +55,24 @@ private:
     } vertex;
 
     typedef map<int, vector<int>> adjacency_map;
+
+    /// Permet de savoir si cette ligne a été brisée. Surtout utile lors du dessin de la ligne pour savoir si on doit commencer une nouvelle ligne
+    bool broken = false;
+
+    /// mets à jour le graphe permettant de trouver les ennemis entourés
+    /// Prends aussi en compte les lignes qui ont pu expirer
+    void updateGraph();
+
+    void destroyEnemy(EnemyElement* enemy);
+
     unique_ptr<GraphCycle> findCycle(vertex* start, vector<vertex>& allVertices, adjacency_map& adjacency);
     unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, vertex* secondParent, map<vertex *, vertex *>& parents);
 
     /// Connecte 'v' aux deux points les plus proches présents sur la ligne 'along'
     void connectToClosest2(vertex* v, vector<vertex>& allVertices, adjacency_map& adjacency, const shared_ptr<MusicLinePart>& along);
 
+    /// Supprime de parts les weak_ptr qui ont expiré
+    void updateParts();
 public:
     explicit MusicLine(unique_ptr<Scene>& scene, shared_ptr<sf::Texture> singleNotesSpritesheet = nullptr, shared_ptr<sf::Texture> doubleNotesSpritesheet = nullptr);
     void addLine(float startX, float startY, float endX, float endY);
@@ -78,6 +85,12 @@ public:
 
     int countParts();
     int countCycles();
+
+    /// Casse chacun des morceaux de la ligne. Appelé lorsqu'un ennemi entre en contact avec un morceau
+    void breakLine();
+
+    /// cf broken
+    bool isBroken();
 
     void debugRender(sf::RenderWindow& target);
 

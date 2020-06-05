@@ -7,6 +7,8 @@
 
 class MusicLinePart {
 private:
+    bool shouldBreak = false;
+
 public:
     float startX;
     float startY;
@@ -16,4 +18,7 @@ public:
     explicit MusicLinePart(float startX, float startY, float endX, float endY);
 
     bool intersects(MusicLinePart& other, sf::Vector2f& intersectionOut);
+
+    bool isBroken();
+    void breakLine();
 };

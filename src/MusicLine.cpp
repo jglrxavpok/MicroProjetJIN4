@@ -2,7 +2,7 @@
 // Created by jglrxavpok on 30/05/2020.
 //
 
-#include <elements/PlayerLineElement.h>
+#include <elements/MusicLineElement.h>
 #include "MusicLine.h"
 #include "math_help.h"
 #include <queue>
@@ -16,7 +16,8 @@ void MusicLine::addLine(float startX, float startY, float endX, float endY) {
     auto partReference = make_shared<MusicLinePart>(startX, startY, endX, endY);
     parts.emplace_back(partReference);
     bool isSingle = rng.rand() < 0.7f;
-    scene->addElement(make_unique<PlayerLineElement>(shared_from_this(), partReference, startX, startY, endX, endY, isSingle ? singleNotesSpritesheet : doubleNotesSpritesheet));
+    scene->addElement(make_unique<MusicLineElement>(shared_from_this(), partReference, startX, startY, endX, endY, isSingle ? singleNotesSpritesheet : doubleNotesSpritesheet));
+    updateParts(); // permet de ne pas fuiter des weak_ptr si on maintient la ligne pendant très longtemps
 }
 
 bool MusicLine::surrounds(unique_ptr<SceneElement>& element) {
@@ -48,7 +49,7 @@ void MusicLine::destroySurroundedEnemies() {
 
 void MusicLine::updateGraph() {
     cycles.clear();
-    parts.erase(remove_if(parts.begin(), parts.end(), [](const auto w) { return w.expired(); }), parts.end());
+    updateParts();
 
     // on a un seul thread, on peut donc supposer sans soucis que les weak_ptr de parts donneront un shared_ptr non-expiré dans la suite de cette méthode
 
@@ -129,6 +130,10 @@ void MusicLine::updateGraph() {
         }
     }
     // TODO: plus efficace avec cet algo? https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
+}
+
+void MusicLine::updateParts() {
+    parts.erase(remove_if(parts.begin(), parts.end(), [](const auto w) { return w.expired(); }), parts.end());
 }
 
 unique_ptr<GraphCycle> MusicLine::findCycle(vertex* start, vector<vertex>& allVertices, adjacency_map& adjacency) {
@@ -279,6 +284,19 @@ void MusicLine::debugRender(sf::RenderWindow &target) {
             target.draw(s);
         }
     }
+}
+
+void MusicLine::breakLine() {
+    for(auto& p : parts) {
+        if(auto part = p.lock()) {
+            part->breakLine();
+        }
+    }
+    broken = true;
+}
+
+bool MusicLine::isBroken() {
+    return broken;
 }
 
 GraphCycle::GraphCycle(vector<sf::Vector2f> vertices): vertices(move(vertices)) {

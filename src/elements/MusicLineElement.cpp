@@ -2,7 +2,7 @@
 // Created by jglrxavpok on 29/05/2020.
 //
 
-#include "PlayerLineElement.h"
+#include "MusicLineElement.h"
 
 #include <utility>
 #include "Scene.h"
@@ -11,7 +11,7 @@
 #include "math_help.h"
 
 
-PlayerLineElement::PlayerLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> spritesheet):
+MusicLineElement::MusicLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> spritesheet):
     parent(std::move(parent)), part(std::move(part)), startX(startX), startY(startY), endX(endX), endY(endY), spritesheet(spritesheet) {
     float dx = endX-startX;
     float dy = endY-startY;
@@ -35,8 +35,9 @@ PlayerLineElement::PlayerLineElement(std::shared_ptr<MusicLine> parent, std::sha
     }
 }
 
-void PlayerLineElement::onAddition(Scene &scene) {
+void MusicLineElement::onAddition(Scene &scene) {
     b2BodyDef bodyDef;
+    bodyDef.userData = this;
     bodyDef.type = b2_kinematicBody;
     bodyDef.angle = atan2((endY-startY), endX-startX);
 
@@ -53,23 +54,20 @@ void PlayerLineElement::onAddition(Scene &scene) {
     rigidbody->CreateFixture(&fixtureDef);
 }
 
-void PlayerLineElement::update(float elapsedTime) {
-    // TODO: Briser les lignes qui rentrent en contact avec un ennemi? (à la Pokémon Ranger)
-
+void MusicLineElement::update(float elapsedTime) {
     life -= elapsedTime;
     if(life <= 0) {
         scheduleForRemoval();
+        return;
+    }
+
+    if(part->isBroken()) {
+        breakPart();
     }
 }
 
-void PlayerLineElement::render(sf::RenderWindow &target, float partialTick) {
+void MusicLineElement::render(sf::RenderWindow &target, float partialTick) {
     int alpha = 255 * (life/MAX_LIFETIME);
-    sf::Color color(255,255,255, alpha);
-    sf::Vertex line[] = {
-        sf::Vertex(sf::Vector2f(startX, startY), color),
-        sf::Vertex(sf::Vector2f(endX, endY), color),
-    };
-    target.draw(line, 2, sf::Lines);
 
     if(spritesheet) {
         float animationSpeed = 0.1f;
@@ -84,8 +82,19 @@ void PlayerLineElement::render(sf::RenderWindow &target, float partialTick) {
     }
 }
 
-PlayerLineElement::~PlayerLineElement() {
+void MusicLineElement::beginContact(SceneElement *other) {
+    if(auto* enemy = dynamic_cast<EnemyElement*>(other)) {
+        parent->breakLine();
+    }
+}
+
+MusicLineElement::~MusicLineElement() {
     if(rigidbody && rigidbody->GetWorld()) {
         rigidbody->GetWorld()->DestroyBody(rigidbody);
     }
+}
+
+void MusicLineElement::breakPart() {
+    // TODO: feedback visuel: utiliser scene pour positioner des éléments "particule" si on a le temps?
+    scheduleForRemoval();
 }

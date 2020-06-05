@@ -5,11 +5,14 @@
 #include "elements/LoopingBackground.h"
 #include "elements/BoatElement.h"
 #include "elements/MusicLineElement.h"
+#include "elements/FinishLineElement.h"
+#include "elements/DecorationElement.h"
 #include "BoatSegment.h"
 #include <tmxlite/Map.hpp>
 #include <tmxlite/LayerGroup.hpp>
 #include <tmxlite/ObjectGroup.hpp>
 #include <tmxlite/ImageLayer.hpp>
+#include <tmxlite/FreeFuncs.hpp>
 #include "specialscreens/GameOverScreen.hpp"
 
 BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
@@ -46,6 +49,8 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
                 enemy->getPosition().x = object.getPosition().x;
                 enemy->getPosition().y = object.getPosition().y;
                 scene->addElement(move(enemy));
+            } else if(type == "finishLine") {
+                scene->addElement(make_unique<FinishLineElement>(object));
             } else {
                 throw std::runtime_error("Unknown object type: "+type+". (if empty none was given)");
             }
@@ -57,13 +62,24 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
             loadLayer(*l);
         }
     } else if(layer.getType() == tmx::Layer::Type::Image) {
-        // TODO
+        auto& image = layer.getLayerAs<tmx::ImageLayer>();
+        std::string texturePath = tmx::resolveFilePath(image.getImagePath(), "");
+        auto it = autoloadedTextures.find(texturePath);
+
+        if(it == autoloadedTextures.end()) { // pas encore chargé
+            autoloadedTextures[texturePath] = Game::loadTexture(texturePath);
+        }
+
+        scene->addElement(make_unique<DecorationElement>(autoloadedTextures[texturePath], image.getOffset().x, image.getOffset().y));
     }
 }
 
 void BoatSegment::loadCollision(const tmx::Object& obj) {
     // ajout de la forme de collision au body 'levelCollisions'
+    createFixture(levelCollisions, obj);
+}
 
+b2Fixture * BoatSegment::createFixture(b2Body *body, const tmx::Object &obj) {
     b2PolygonShape shape;
     vector<b2Vec2> shapePolygon;
     switch(obj.getShape()) {
@@ -92,7 +108,7 @@ void BoatSegment::loadCollision(const tmx::Object& obj) {
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 1.0f;
-    levelCollisions->CreateFixture(&fixture);
+    return body->CreateFixture(&fixture);
 }
 
 void BoatSegment::update() {

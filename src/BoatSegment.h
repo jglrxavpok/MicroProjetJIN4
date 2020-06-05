@@ -25,6 +25,12 @@ private:
     /// la ligne de musique en train d'être dessinée (null si le clic gauche n'est pas enfoncé)
     std::shared_ptr<MusicLine> currentMusicLine = nullptr;
 
+    /// textures chargées lors du chargement de la map (présentes sur les image layers)
+    std::map<std::string, std::shared_ptr<sf::Texture>> autoloadedTextures;
+
+    /// sprites utilisés pour la décoration du niveau (présents sur les image layers)
+    std::vector<sf::Sprite> levelDecorations;
+
     constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
 
     b2Body* levelCollisions;
@@ -37,6 +43,9 @@ private:
 public:
     /// 60Hz
     constexpr static float TARGET_UPDATE_PERIOD = 1.0/60.0;
+
+    /// Ajoute une fixture correspondant à l'objet donné (ie même forme) au rigidbody 'body'
+    static b2Fixture * createFixture(b2Body *body, const tmx::Object &obj);
 
     explicit BoatSegment(Game& game);
 

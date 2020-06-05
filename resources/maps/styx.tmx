@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="100" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="31">
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="100" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="33">
  <tileset firstgid="1" source="boat_tileset.tsx"/>
+ <group id="12" name="finishLine">
+  <imagelayer id="14" name="finishLineTex" offsetx="3189.33" offsety="-54.6667">
+   <image source="../textures/finish_line.png" width="200" height="1600"/>
+  </imagelayer>
+  <objectgroup id="13" name="finishLine">
+   <object id="31" type="finishLine" x="3190.28" y="2.31348" width="43.956" height="946.212"/>
+  </objectgroup>
+ </group>
  <group id="10" name="enemies">
   <objectgroup id="11" name="enemySpawners">
    <object id="6" type="enemy" x="896.97" y="500">

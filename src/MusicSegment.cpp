@@ -22,6 +22,7 @@ void MusicSegment::playSound(std::string note) {
 
 void MusicSegment::checkNote(std::string note) {
     if (!gameOver) {
+        playerPlayed = 1;
         lastPressKey = notes[note];
         if (lastPressKey->getState() == keyState::blinking) {
             lastPressKey->setState(keyState::right);
@@ -45,13 +46,25 @@ void MusicSegment::update() {
 
 void MusicSegment::playMusic() {
     if (notePlay != ticks / TEMPO && notePlay < music.size()) {
+        std::cout << lives << std::endl;
         //notes[music[notePlay]]->play();
-        if (lastPressKey) {
-            lastPressKey->setState(keyState::nothing);
+
+        if (!playerPlayed) {
+            lives--;
         }
-        lastPressKey = notes[music[notePlay]];
-        lastPressKey->setState(keyState::blinking);
-        notePlay++;
+        if (lives <= 0) {
+            gameOver = 1;
+        }
+
+        playerPlayed = 0;
+        if (!gameOver) {
+            if (lastPressKey) {
+                lastPressKey->setState(keyState::nothing);
+            }
+            lastPressKey = notes[music[notePlay]];
+            lastPressKey->setState(keyState::blinking);
+            notePlay++;
+        }
     }
 }
 
@@ -69,29 +82,32 @@ void MusicSegment::keyPressed(sf::Event::KeyEvent event) {
         playSound("A");
         checkNote("A");
     }
-    if (event.code == sf::Keyboard::B) {
+    else if (event.code == sf::Keyboard::B) {
         playSound("B");
         checkNote("B");
     }
-    if (event.code == sf::Keyboard::C) {
+    else if (event.code == sf::Keyboard::C) {
         playSound("C");
         checkNote("C");
     }
-    if (event.code == sf::Keyboard::D) {
+    else if (event.code == sf::Keyboard::D) {
         playSound("D");
         checkNote("D");
     }
-    if (event.code == sf::Keyboard::E) {
+    else if (event.code == sf::Keyboard::E) {
         playSound("E");
         checkNote("E");
     }
-    if (event.code == sf::Keyboard::F) {
+    else if (event.code == sf::Keyboard::F) {
         playSound("F");
         checkNote("F");
     }
-    if (event.code == sf::Keyboard::G) {
+    else if (event.code == sf::Keyboard::G) {
         playSound("G");
         checkNote("G");
+    }
+    else {
+        lives--;
     }
 }
 

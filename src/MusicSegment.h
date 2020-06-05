@@ -38,6 +38,7 @@ private:
     int ticks = 0;
     int lives = 3;
     int gameOver = 0;
+    int playerPlayed = 1;
 
 public:
     ///initialisation chargement des textures

@@ -14,6 +14,12 @@ MusicSegment::MusicSegment(Game& game): GameplaySegment(game) {
     keyBoardSprite.setTexture(*keyboardImage);
 
     keySprite.setTexture(*noKeyImage);
+    for (int k = 0; k < NBLIFE; k++) {
+        livesSprites.push_back(std::make_unique<sf::Sprite>());
+        livesSprites[k]->setTexture(*heart);
+        livesSprites[k]->setScale(sf::Vector2f(0.3f, 0.3f));
+        livesSprites[k]->setPosition(sf::Vector2f(500+k*200, 600));
+    }
 }
 
 void MusicSegment::playSound(std::string note) {
@@ -30,6 +36,7 @@ void MusicSegment::checkNote(std::string note) {
         else {
             lastPressKey->setState(keyState::wrong);
             lives--;
+            livesSprites[lives]->setTexture(*deadHeart);
             if (lives <= 0) {
                 gameOver = 1;
             }
@@ -41,16 +48,27 @@ void MusicSegment::update() {
     ticks++;
     if (!gameOver) {
         this->playMusic();
+        if (ticks % TEMPO > TEMPO / 10) {
+            for (int life = 0; life < lives; life++) {
+                livesSprites[life]->setTexture(*heart);
+            }
+        }
+        else {
+            for (int life = 0; life < lives; life++) {
+                livesSprites[life]->setTexture(*beatingHeart);
+            }
+        }
     }
 }
 
 void MusicSegment::playMusic() {
     if (notePlay != ticks / TEMPO && notePlay < music.size()) {
-        std::cout << lives << std::endl;
+        //std::cout << lives << std::endl;
         //notes[music[notePlay]]->play();
 
         if (!playerPlayed) {
             lives--;
+            livesSprites[lives]->setTexture(*deadHeart);
         }
         if (lives <= 0) {
             gameOver = 1;
@@ -75,6 +93,9 @@ void MusicSegment::render(sf::RenderWindow& renderTarget, float partialTick) {
         lastPressKey->render(renderTarget, partialTick, keySprite, noKeyImage);
     }
     renderTarget.draw(keySprite);
+    for (int lifeSprite = 0; lifeSprite < NBLIFE; lifeSprite++) {
+        renderTarget.draw(*livesSprites[lifeSprite]);
+    }
 }
 
 void MusicSegment::keyPressed(sf::Event::KeyEvent event) {
@@ -108,6 +129,7 @@ void MusicSegment::keyPressed(sf::Event::KeyEvent event) {
     }
     else {
         lives--;
+        livesSprites[lives]->setTexture(*deadHeart);
     }
 }
 

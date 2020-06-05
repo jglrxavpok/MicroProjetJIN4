@@ -12,6 +12,7 @@
 #include "Game.h"
 
 #define TEMPO 70
+#define NBLIFE 3
 
 class MusicSegment: public GameplaySegment {
 public:
@@ -32,11 +33,20 @@ private:
     ///Dernière image de note utilisée
     std::shared_ptr<Sound> lastPressKey;
 
+    ///Texture des vies
+    std::shared_ptr<sf::Texture> beatingHeart = Game::loadTexture("resources/beating_heart.png");
+    std::shared_ptr<sf::Texture> heart = Game::loadTexture("resources/heart.png");
+    std::shared_ptr<sf::Texture> deadHeart = Game::loadTexture("resources/dead_heart.png");
+
+    ///Sprite pour les vies
+    std::vector<unique_ptr<sf::Sprite>> livesSprites;
+
+
     sf::Sprite keySprite;
     sf::Sprite keyBoardSprite;
     int notePlay = 0;
     int ticks = 0;
-    int lives = 3;
+    int lives = NBLIFE;
     int gameOver = 0;
     int playerPlayed = 1;
 

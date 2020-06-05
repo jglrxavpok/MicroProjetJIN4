@@ -11,7 +11,7 @@
 #include "GameplaySegment.h"
 #include "Game.h"
 
-#define TEMPO 100
+#define TEMPO 70
 
 class MusicSegment: public GameplaySegment {
 public:
@@ -36,12 +36,19 @@ private:
     sf::Sprite keyBoardSprite;
     int notePlay = 0;
     int ticks = 0;
+    int lives = 3;
+    int gameOver = 0;
 
 public:
     ///initialisation chargement des textures
     explicit MusicSegment(Game& game);
 
+    ///Joue la note appuyée
     void playSound(std::string note);
+
+    ///regarde si la note jouée est la bonne, met lastPressKey à cette note et set state de note
+    void checkNote(std::string note);
+
 
     /// Appelé toutes les TARGET_UPDATE_PERIOD ms pour mettre à jour l'état du jeu
     void update() override;

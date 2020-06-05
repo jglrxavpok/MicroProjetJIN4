@@ -7,6 +7,8 @@
 #include <string>
 #include <memory>
 
+enum class keyState { blinking, right, wrong, nothing };
+
 class Sound {
 private:
 	std::unique_ptr<sf::SoundBuffer> buffer;
@@ -25,11 +27,14 @@ private:
 
 	///Utilisé pour onPress pour faire clignoter la touche
 	int blink = 0;
+	keyState state;
 
 public:
 	Sound(std::string note);
 	void play();
 	void render(sf::RenderWindow& renderTarget, float partialTick, sf::Sprite& keySprite, std::shared_ptr<sf::Texture> noKeyImage);
+	void setState(keyState state);
+	keyState getState();
 
 	~Sound() = default;
 };

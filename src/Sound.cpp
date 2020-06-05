@@ -8,6 +8,8 @@ Sound::Sound(std::string note) {
     successKeyImage = Game::loadTexture("resources/success"+note+".png");
     wrongKeyImage = Game::loadTexture("resources/wrong"+note+".png");
     pressKeyImage = Game::loadTexture("resources/press"+note+".png");
+
+    state = keyState::nothing;
 }
 
 void Sound::play() {
@@ -17,10 +19,34 @@ void Sound::play() {
 
 void Sound::render(sf::RenderWindow& renderTarget, float partialTick, sf::Sprite& keySprite, std::shared_ptr<sf::Texture> noKeyImage) {
     blink++;
-    if (blink % 400 > 200) {
-        keySprite.setTexture(*noKeyImage);
+    switch (this->state) {
+        case keyState::blinking:
+            if (blink % 400 > 200) {
+                keySprite.setTexture(*noKeyImage);
+            }
+            else {
+                keySprite.setTexture(*pressKeyImage);
+            }
+            break;
+
+        case keyState::right:
+            keySprite.setTexture(*successKeyImage);
+            break;
+
+        case keyState::wrong:
+            keySprite.setTexture(*wrongKeyImage);
+            break;
+
+        default:
+            keySprite.setTexture(*noKeyImage);
+            break;
     }
-    else {
-        keySprite.setTexture(*pressKeyImage);
-    }
+}
+
+void Sound::setState(keyState state) {
+    this->state = state;
+}
+
+keyState Sound::getState() {
+    return state;
 }

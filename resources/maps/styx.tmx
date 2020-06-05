@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="100" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="10">
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="100" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="31">
  <tileset firstgid="1" source="boat_tileset.tsx"/>
  <group id="10" name="enemies">
   <objectgroup id="11" name="enemySpawners">
@@ -13,6 +13,66 @@
     <point/>
    </object>
    <object id="9" type="enemy" x="2651.52" y="278.788">
+    <point/>
+   </object>
+   <object id="10" type="enemy" x="1258.53" y="497.397">
+    <point/>
+   </object>
+   <object id="11" type="enemy" x="1651.82" y="326.2">
+    <point/>
+   </object>
+   <object id="12" type="enemy" x="1788.32" y="647.773">
+    <point/>
+   </object>
+   <object id="13" type="enemy" x="2341.24" y="330.827">
+    <point/>
+   </object>
+   <object id="14" type="enemy" x="2600.35" y="710.237">
+    <point/>
+   </object>
+   <object id="15" type="enemy" x="2889.53" y="432.62">
+    <point/>
+   </object>
+   <object id="16" type="enemy" x="1892.42" y="395.604">
+    <point/>
+   </object>
+   <object id="18" type="enemy" x="1415.85" y="721.805">
+    <point/>
+   </object>
+   <object id="19" type="enemy" x="1091.96" y="185.078">
+    <point/>
+   </object>
+   <object id="20" type="enemy" x="983.227" y="772.701">
+    <point/>
+   </object>
+   <object id="21" type="enemy" x="1781.38" y="485.83">
+    <point/>
+   </object>
+   <object id="22" type="enemy" x="2260.27" y="513.592">
+    <point/>
+   </object>
+   <object id="23" type="enemy" x="2403.7" y="670.908">
+    <point/>
+   </object>
+   <object id="24" type="enemy" x="2505.49" y="483.516">
+    <point/>
+   </object>
+   <object id="25" type="enemy" x="2653.56" y="395.604">
+    <point/>
+   </object>
+   <object id="26" type="enemy" x="2753.04" y="529.786">
+    <point/>
+   </object>
+   <object id="27" type="enemy" x="2827.07" y="629.265">
+    <point/>
+   </object>
+   <object id="28" type="enemy" x="2942.74" y="647.773">
+    <point/>
+   </object>
+   <object id="29" type="enemy" x="3002.89" y="511.278">
+    <point/>
+   </object>
+   <object id="30" type="enemy" x="3019.09" y="474.263">
     <point/>
    </object>
   </objectgroup>

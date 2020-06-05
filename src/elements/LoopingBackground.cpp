@@ -18,7 +18,7 @@ void LoopingBackground::update(float elapsedTime) {
 }
 
 /// Met à jour la taille du sprite pour correspondre à la taille de la fenêtre
-void updateScale(sf::RenderWindow& target, sf::Sprite& sprite) {
+void LoopingBackground::updateScale(sf::RenderWindow& target, sf::Sprite& sprite) {
     float scaleX = (float)target.getSize().x / sprite.getTexture()->getSize().x;
     float scaleY = (float)target.getSize().y / sprite.getTexture()->getSize().y;
     sprite.setScale(scaleX, scaleY);

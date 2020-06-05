@@ -10,6 +10,7 @@
 #include <tmxlite/LayerGroup.hpp>
 #include <tmxlite/ObjectGroup.hpp>
 #include <tmxlite/ImageLayer.hpp>
+#include "specialscreens/GameOverScreen.hpp"
 
 BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     badGuyTexture = Game::loadTexture("resources/textures/bad_guy.png");
@@ -45,6 +46,8 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
                 enemy->getPosition().x = object.getPosition().x;
                 enemy->getPosition().y = object.getPosition().y;
                 scene->addElement(move(enemy));
+            } else {
+                throw std::runtime_error("Unknown object type: "+type+". (if empty none was given)");
             }
             // TODO: obstacles, finish line, etc.
         }
@@ -94,7 +97,8 @@ void BoatSegment::loadCollision(const tmx::Object& obj) {
 
 void BoatSegment::update() {
     if(state.isGameOver()) {
-        // TODO: switch to game over screen :c
+        game.setGameplay(make_unique<GameOverScreen<BoatSegment>>(game));
+        return;
     }
 
     if(currentMusicLine) {

@@ -13,7 +13,7 @@ float GameState::getLifeRatio() {
 }
 
 bool GameState::isGameOver() {
-    return playerLife < 0.f;
+    return playerLife <= 0.f;
 }
 
 void GameState::damage(float amount) {

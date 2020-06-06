@@ -7,9 +7,8 @@
 #include "math_help.h"
 #include <queue>
 
-MusicLine::MusicLine(std::unique_ptr<Scene>& scene, std::shared_ptr<sf::Texture> singleNotesSpritesheet, std::shared_ptr<sf::Texture> doubleNotesSpritesheet):
-    scene(scene), singleNotesSpritesheet(std::move(singleNotesSpritesheet)), doubleNotesSpritesheet(std::move(doubleNotesSpritesheet)) {
-
+MusicLine::MusicLine(std::unique_ptr<Scene>& scene, std::shared_ptr<sf::Texture> singleNotesSpritesheet, std::shared_ptr<sf::Texture> doubleNotesSpritesheet, std::shared_ptr<sf::Sound> breakSound, std::shared_ptr<sf::Sound> killSound):
+    scene(scene), singleNotesSpritesheet(std::move(singleNotesSpritesheet)), doubleNotesSpritesheet(std::move(doubleNotesSpritesheet)), breakSound(std::move(breakSound)), killSound(std::move(killSound)) {
 }
 
 void MusicLine::addLine(float startX, float startY, float endX, float endY) {
@@ -37,12 +36,20 @@ void MusicLine::destroyEnemy(EnemyElement* enemy) {
 
 void MusicLine::destroySurroundedEnemies() {
     updateGraph(); // les morceaux ont pu expirer depuis la dernière MàJ
+    bool killedOne = false;
     for(auto& elem : scene->getElements()) {
         auto* nakedPtr = elem.get();
         if(auto* enemy = dynamic_cast<EnemyElement*>(nakedPtr)) {
             if(surrounds(elem)) {
                 destroyEnemy(enemy);
+                killedOne = true;
             }
+        }
+    }
+
+    if(killedOne) {
+        if(killSound) {
+            killSound->play();
         }
     }
 }
@@ -291,6 +298,9 @@ void MusicLine::breakLine() {
         if(auto part = p.lock()) {
             part->breakLine();
         }
+    }
+    if(breakSound) {
+        breakSound->play();
     }
     broken = true;
 }

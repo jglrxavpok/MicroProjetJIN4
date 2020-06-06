@@ -23,7 +23,10 @@ BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     unique_ptr<SceneElement> background = make_unique<LoopingBackground>(Game::loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
 
-    scene->addElement(make_unique<BoatElement>(state));
+    hurtSoundBuffer = Game::loadBuffer("resources/sounds/hurt.wav");
+    lineBreakSoundBuffer = Game::loadBuffer("resources/sounds/line_break.wav");
+    lineKillsSoundBuffer = Game::loadBuffer("resources/sounds/line_cycle.wav");
+    scene->addElement(make_unique<BoatElement>(state, Game::loadSound(hurtSoundBuffer)));
 
     tmx::Map map;
     map.load("resources/maps/styx.tmx");
@@ -50,6 +53,7 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
                 enemy->getPosition().y = object.getPosition().y;
                 scene->addElement(move(enemy));
             } else if(type == "finishLine") {
+                finishLineX = object.getPosition().x;
                 scene->addElement(make_unique<FinishLineElement>(object));
             } else {
                 throw std::runtime_error("Unknown object type: "+type+". (if empty none was given)");
@@ -129,11 +133,22 @@ void BoatSegment::update() {
     }
 }
 
-void BoatSegment::renderHealthBar() {
+void BoatSegment::renderProgressBar() {
     auto& view = renderTarget.getView();
 
     sf::RectangleShape background(sf::Vector2f(view.getSize().x-40.0f, 50.0f));
     background.setPosition(view.getSize().x/2.0f - background.getSize().x/2.0f, view.getSize().y-background.getSize().y-20.0f);
+    background.setFillColor(sf::Color(38,38,38,255));
+
+    // TODO: Render finish line & boat position
+    renderTarget.draw(background);
+}
+
+void BoatSegment::renderHealthBar() {
+    auto& view = renderTarget.getView();
+
+    sf::RectangleShape background(sf::Vector2f(view.getSize().x-40.0f, 50.0f));
+    background.setPosition(view.getSize().x/2.0f - background.getSize().x/2.0f, 20.0f);
     background.setFillColor(sf::Color(38,38,38,255));
 
 
@@ -162,6 +177,7 @@ void BoatSegment::render(sf::RenderWindow& renderTarget, float partialTick) {
 
     // render UI
     renderHealthBar();
+    renderProgressBar();
 }
 
 float lastX = 0;
@@ -171,7 +187,7 @@ void BoatSegment::mousePressed(int x, int y, sf::Mouse::Button button) {
     auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
     lastX = coords.x;
     lastY = coords.y;
-    currentMusicLine = make_shared<MusicLine>(scene, singleNotesTexture, doubleNotesTexture);
+    currentMusicLine = make_shared<MusicLine>(scene, singleNotesTexture, doubleNotesTexture, Game::loadSound(lineBreakSoundBuffer), Game::loadSound(lineKillsSoundBuffer));
 }
 
 void BoatSegment::mouseReleased(int x, int y, sf::Mouse::Button button) {

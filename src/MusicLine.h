@@ -9,6 +9,7 @@
 #include "elements/EnemyElement.h"
 #include "MusicLinePart.h"
 #include "RNG.h"
+#include <SFML/Audio.hpp>
 
 class GraphCycle {
 private:
@@ -40,6 +41,8 @@ private:
 
     shared_ptr<sf::Texture> singleNotesSpritesheet;
     shared_ptr<sf::Texture> doubleNotesSpritesheet;
+    shared_ptr<sf::Sound> breakSound;
+    shared_ptr<sf::Sound> killSound;
 
     RNG rng{};
 
@@ -74,7 +77,7 @@ private:
     /// Supprime de parts les weak_ptr qui ont expiré
     void updateParts();
 public:
-    explicit MusicLine(unique_ptr<Scene>& scene, shared_ptr<sf::Texture> singleNotesSpritesheet = nullptr, shared_ptr<sf::Texture> doubleNotesSpritesheet = nullptr);
+    explicit MusicLine(unique_ptr<Scene>& scene, shared_ptr<sf::Texture> singleNotesSpritesheet = nullptr, shared_ptr<sf::Texture> doubleNotesSpritesheet = nullptr, shared_ptr<sf::Sound> breakSound = nullptr, shared_ptr<sf::Sound> killSound = nullptr);
     void addLine(float startX, float startY, float endX, float endY);
 
     /// Renvoies 'true' ssi cette ligne de musique entoure l'élement donné (ie cette ligne crée une boucle et que

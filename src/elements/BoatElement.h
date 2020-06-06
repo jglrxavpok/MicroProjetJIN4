@@ -5,6 +5,7 @@
 
 #include "SceneElement.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <memory>
 #include "GameState.h"
@@ -34,10 +35,14 @@ private:
 
     /// contrôle la réduction de vitesse de rotation
     float angularDamping = 0.75f;
+
+    /// son à jouer quand le joueur prend des dégâts
+    std::shared_ptr<sf::Sound> hurtSound;
+
     GameState& gameState;
 
 public:
-    explicit BoatElement(GameState& gameState);
+    explicit BoatElement(GameState& gameState, std::shared_ptr<sf::Sound> hurtSound);
 
     void update(float elapsedTime) override;
     void render(sf::RenderWindow &target, float partialTick) override;

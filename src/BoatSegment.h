@@ -25,6 +25,15 @@ private:
     /// la ligne de musique en train d'être dessinée (null si le clic gauche n'est pas enfoncé)
     std::shared_ptr<MusicLine> currentMusicLine = nullptr;
 
+    /// son joué lorsque le joueur est blessé
+    std::unique_ptr<sf::SoundBuffer> hurtSoundBuffer;
+
+    /// son joué lorsque la ligne de musique est brisée
+    std::unique_ptr<sf::SoundBuffer> lineBreakSoundBuffer;
+
+    /// son joué lorsque la ligne de musique élimine un ennemi
+    std::unique_ptr<sf::SoundBuffer> lineKillsSoundBuffer;
+
     /// textures chargées lors du chargement de la map (présentes sur les image layers)
     std::map<std::string, std::shared_ptr<sf::Texture>> autoloadedTextures;
 
@@ -33,17 +42,16 @@ private:
 
     constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
 
+    float finishLineX = 0.0f;
     b2Body* levelCollisions;
 
     void renderHealthBar();
+    void renderProgressBar();
 
     void loadLayer(tmx::Layer& layer);
     void loadCollision(const tmx::Object& obj);
 
 public:
-    /// 60Hz
-    constexpr static float TARGET_UPDATE_PERIOD = 1.0/60.0;
-
     /// Ajoute une fixture correspondant à l'objet donné (ie même forme) au rigidbody 'body'
     static b2Fixture * createFixture(b2Body *body, const tmx::Object &obj);
 

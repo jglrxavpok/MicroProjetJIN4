@@ -10,7 +10,7 @@
 #include <utility>
 #include <box2d/b2_joint.h>
 
-BoatElement::BoatElement(GameState& gameState): gameState(gameState), SceneElement() {
+BoatElement::BoatElement(GameState& gameState, std::shared_ptr<sf::Sound> hurtSound): gameState(gameState), hurtSound(std::move(hurtSound)), SceneElement() {
     pointyPart.setFillColor(sf::Color::Green);
     squarePart.setFillColor(sf::Color::Green);
 
@@ -100,4 +100,5 @@ void BoatElement::render(sf::RenderWindow &target, float partialTick) {
 
 void BoatElement::damage(float amount) {
     gameState.damage(amount);
+    hurtSound->play();
 }

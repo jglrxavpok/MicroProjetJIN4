@@ -34,6 +34,8 @@ int gameMain()
     sf::Clock deltaClock;
     float lag = 0.0; // in ms
 
+    // TODO: Ecran de chargement
+
     Game game{window};
     game.setGameplay(move(make_unique<BoatSegment>(game)));
 

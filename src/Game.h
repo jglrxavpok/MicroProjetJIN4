@@ -9,8 +9,8 @@
 #include <memory>
 #include "Scene.h"
 #include "RNG.h"
-#include "MusicLine.h"
-#include "GameState.h"
+#include "boat_segment/MusicLine.h"
+#include "boat_segment/GameState.h"
 #include "GameplaySegment.h"
 
 

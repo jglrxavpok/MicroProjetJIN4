@@ -1,5 +1,5 @@
 #include "Sound.h"
-#include "BoatSegment.h"
+#include "boat_segment/BoatSegment.h"
 
 Sound::Sound(std::string note) {
     buffer = std::move(Game::loadBuffer("resources/" + note + ".wav"));

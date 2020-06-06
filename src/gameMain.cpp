@@ -5,8 +5,8 @@
 #include <tmxlite/Map.hpp>
 #include <box2d/b2_body.h>
 #include <iostream>
-#include "BoatSegment.h"
-#include "MusicSegment.h"
+#include "boat_segment/BoatSegment.h"
+#include "boat_segment/MusicSegment.h"
 
 using namespace std;
 

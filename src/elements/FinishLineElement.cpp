@@ -4,7 +4,7 @@
 
 #include "FinishLineElement.h"
 #include "BoatElement.h"
-#include "BoatSegment.h"
+#include "boat_segment/BoatSegment.h"
 #include <iostream>
 
 FinishLineElement::FinishLineElement(const tmx::Object &source): sourceObject(source) {

@@ -8,7 +8,7 @@
 #include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <memory>
-#include "GameState.h"
+#include "boat_segment/GameState.h"
 
 class BoatElement: public SceneElement {
 private:

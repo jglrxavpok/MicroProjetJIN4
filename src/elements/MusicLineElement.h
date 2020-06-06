@@ -7,7 +7,7 @@
 #include "SceneElement.h"
 #include <box2d/box2d.h>
 #include <memory>
-#include "MusicLine.h"
+#include "boat_segment/MusicLine.h"
 
 class MusicLineElement: public SceneElement {
 private:

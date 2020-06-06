@@ -2,7 +2,7 @@
 #include <elements/MusicLineElement.h>
 #include <elements/EnemyElement.h>
 #include "Scene.h"
-#include "MusicLine.h"
+#include "boat_segment/MusicLine.h"
 
 #define M_PI 3.1415926535
 

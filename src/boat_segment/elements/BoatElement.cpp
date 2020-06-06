@@ -9,6 +9,7 @@
 #include <cmath>
 #include <utility>
 #include <box2d/b2_joint.h>
+#include <iostream>
 
 BoatElement::BoatElement(GameState& gameState, std::shared_ptr<sf::Sound> hurtSound): gameState(gameState), hurtSound(std::move(hurtSound)), SceneElement() {
     pointyPart.setFillColor(sf::Color::Green);

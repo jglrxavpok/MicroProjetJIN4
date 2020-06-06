@@ -1,94 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="100" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="33">
- <tileset firstgid="1" source="boat_tileset.tsx"/>
- <group id="12" name="finishLine">
-  <imagelayer id="14" name="finishLineTex" offsetx="3189.33" offsety="-54.6667">
-   <image source="../textures/finish_line.png" width="200" height="1600"/>
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="left-up" width="1000" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="113">
+ <tileset firstgid="1" name="boat_tileset" tilewidth="32" tileheight="32" tilecount="25" columns="5">
+  <image source="../textures/tileset.png" width="160" height="160"/>
+  <tile id="0" type="water"/>
+  <tile id="1" type="water"/>
+  <tile id="2" type="water"/>
+  <tile id="3" type="water"/>
+  <tile id="4" type="water"/>
+  <tile id="8">
+   <animation>
+    <frame tileid="0" duration="100"/>
+    <frame tileid="1" duration="100"/>
+    <frame tileid="2" duration="100"/>
+    <frame tileid="3" duration="100"/>
+    <frame tileid="4" duration="100"/>
+   </animation>
+  </tile>
+ </tileset>
+ <tileset firstgid="26" source="indev_tileset.tsx"/>
+ <group id="16" name="obstacles">
+  <objectgroup id="15" name="obstacles">
+   <object id="34" type="collision" x="652" y="216" width="212" height="816"/>
+   <object id="38" type="collision" x="2218" y="-124" width="150" height="466"/>
+   <object id="53" type="collision" x="2634.09" y="389.394" width="150" height="133.333"/>
+   <object id="55" type="collision" x="3473.48" y="-21.212" width="150" height="724.242"/>
+   <object id="39" type="collision" x="2218" y="595" width="150" height="500"/>
+   <object id="56" type="collision" x="3989.36" y="194.121" width="256.061" height="69.6965"/>
+   <object id="57" type="collision" x="3989.67" y="195.334" width="80.3034" height="772.727"/>
+   <object id="58" type="collision" x="4565.18" y="3.63667" width="80.3034" height="406.06"/>
+   <object id="59" type="collision" x="4209.3" y="535.818" width="437.394" height="69.6965"/>
+   <object id="60" type="collision" x="4163.85" y="194.303" width="80.3034" height="406.06"/>
+   <object id="61" type="collision" x="4565.18" y="536.97" width="80.3034" height="406.06"/>
+   <object id="36" gid="26" x="652" y="1032.67" width="212" height="816.667"/>
+   <object id="48" gid="26" x="2220" y="343" width="152" height="470"/>
+   <object id="49" gid="26" x="2216" y="1097" width="152" height="500"/>
+   <object id="54" gid="26" x="2633.15" y="524.242" width="152" height="137.879"/>
+   <object id="63" gid="26" x="3473.33" y="707.06" width="152" height="727.212"/>
+   <object id="64" gid="26" x="3990.67" y="923.061" width="78.6667" height="727.212"/>
+   <object id="65" gid="26" x="4164.67" y="607.061" width="78.6667" height="411.212"/>
+   <object id="66" gid="26" x="4566" y="413.061" width="78.6667" height="411.212"/>
+   <object id="67" gid="26" x="4567.33" y="949.061" width="78.6667" height="411.212"/>
+   <object id="68" gid="26" x="4224.67" y="606.394" width="366.667" height="68.5453"/>
+   <object id="69" gid="26" x="4042.67" y="264.394" width="162.667" height="68.5453"/>
+   <object id="81" type="collision" x="5420.87" y="454.97" width="360" height="72"/>
+   <object id="82" type="collision" x="5184" y="455" width="72" height="72"/>
+   <object id="83" type="collision" x="5566" y="246" width="72" height="72"/>
+   <object id="84" type="collision" x="5928" y="648" width="100" height="258"/>
+   <object id="85" type="enemy" x="5384" y="795">
+    <point/>
+   </object>
+   <object id="86" type="collision" x="6510" y="759" width="67" height="63"/>
+   <object id="87" type="collision" x="6536.5" y="288.5" width="13" height="472"/>
+   <object id="88" x="6551" y="307">
+    <polygon points="0,0 67,1 1,47"/>
+   </object>
+   <object id="89" gid="26" x="5183.67" y="528.727" width="72.667" height="75.5453"/>
+   <object id="90" gid="26" x="5567.67" y="320.227" width="72.667" height="75.5453"/>
+   <object id="91" gid="26" x="5417.67" y="530.227" width="363.667" height="75.5453"/>
+   <object id="92" gid="26" x="5928.17" y="907.227" width="110.667" height="260.545"/>
+   <object id="93" gid="26" x="6510.17" y="823.227" width="68.667" height="65.5453"/>
+   <object id="94" gid="26" x="6536.67" y="759.227" width="15.667" height="469.545"/>
+   <object id="95" gid="26" x="6551.17" y="319.227" width="66.667" height="14.545"/>
+   <object id="96" gid="26" x="6549.67" y="333.728" width="47.667" height="14.545"/>
+   <object id="97" gid="26" x="6552.17" y="347.728" width="25.667" height="14.545"/>
+  </objectgroup>
+ </group>
+ <group id="12" name="finishLine" locked="1">
+  <imagelayer id="14" name="finishLineTex" offsetx="9960.33" offsety="-54.6667">
+   <image source="../textures/finish_line.png" width="200" height="900"/>
   </imagelayer>
   <objectgroup id="13" name="finishLine">
-   <object id="31" type="finishLine" x="3190.28" y="2.31348" width="43.956" height="946.212"/>
+   <object id="31" type="finishLine" x="9960.28" y="2.31348" width="43.956" height="946.212"/>
   </objectgroup>
  </group>
  <group id="10" name="enemies">
   <objectgroup id="11" name="enemySpawners">
-   <object id="6" type="enemy" x="896.97" y="500">
+   <object id="37" type="enemy" x="1460" y="488">
     <point/>
    </object>
-   <object id="7" type="enemy" x="1612.12" y="157.576">
+   <object id="42" type="enemy" x="2292" y="266">
     <point/>
    </object>
-   <object id="8" type="enemy" x="1900" y="630.303">
+   <object id="43" type="enemy" x="2290" y="676">
     <point/>
    </object>
-   <object id="9" type="enemy" x="2651.52" y="278.788">
+   <object id="50" type="enemy" x="3115.15" y="203.03">
     <point/>
    </object>
-   <object id="10" type="enemy" x="1258.53" y="497.397">
+   <object id="51" type="enemy" x="3269.7" y="469.697">
     <point/>
    </object>
-   <object id="11" type="enemy" x="1651.82" y="326.2">
+   <object id="52" type="enemy" x="3133.33" y="760.606">
     <point/>
    </object>
-   <object id="12" type="enemy" x="1788.32" y="647.773">
+   <object id="70" type="enemy" x="3925.33" y="528">
     <point/>
    </object>
-   <object id="13" type="enemy" x="2341.24" y="330.827">
+   <object id="71" type="enemy" x="4110.67" y="136">
     <point/>
    </object>
-   <object id="14" type="enemy" x="2600.35" y="710.237">
+   <object id="72" type="enemy" x="4592" y="478.667">
     <point/>
    </object>
-   <object id="15" type="enemy" x="2889.53" y="432.62">
+   <object id="73" type="enemy" x="4769.33" y="349.333">
     <point/>
    </object>
-   <object id="16" type="enemy" x="1892.42" y="395.604">
+   <object id="74" type="enemy" x="4778.67" y="409.333">
     <point/>
    </object>
-   <object id="18" type="enemy" x="1415.85" y="721.805">
+   <object id="75" type="enemy" x="4777.33" y="474.667">
     <point/>
    </object>
-   <object id="19" type="enemy" x="1091.96" y="185.078">
+   <object id="76" type="enemy" x="4781.33" y="522.667">
     <point/>
    </object>
-   <object id="20" type="enemy" x="983.227" y="772.701">
+   <object id="77" type="enemy" x="4778.67" y="605.333">
     <point/>
    </object>
-   <object id="21" type="enemy" x="1781.38" y="485.83">
+   <object id="78" type="enemy" x="4778.67" y="666.667">
     <point/>
    </object>
-   <object id="22" type="enemy" x="2260.27" y="513.592">
+   <object id="79" type="enemy" x="4361.33" y="357.333">
     <point/>
    </object>
-   <object id="23" type="enemy" x="2403.7" y="670.908">
+   <object id="80" type="enemy" x="4485.33" y="229.333">
     <point/>
    </object>
-   <object id="24" type="enemy" x="2505.49" y="483.516">
+   <object id="98" type="enemy" x="5604" y="184">
     <point/>
    </object>
-   <object id="25" type="enemy" x="2653.56" y="395.604">
+   <object id="99" type="enemy" x="6192" y="752">
     <point/>
    </object>
-   <object id="26" type="enemy" x="2753.04" y="529.786">
+   <object id="100" type="enemy" x="6348" y="684">
     <point/>
    </object>
-   <object id="27" type="enemy" x="2827.07" y="629.265">
+   <object id="101" type="enemy" x="6224" y="492">
     <point/>
    </object>
-   <object id="28" type="enemy" x="2942.74" y="647.773">
+   <object id="102" type="enemy" x="6040" y="208">
     <point/>
    </object>
-   <object id="29" type="enemy" x="3002.89" y="511.278">
+   <object id="103" type="enemy" x="5924" y="360">
     <point/>
    </object>
-   <object id="30" type="enemy" x="3019.09" y="474.263">
+   <object id="104" type="enemy" x="6416" y="156">
+    <point/>
+   </object>
+   <object id="105" type="enemy" x="6616" y="400">
+    <point/>
+   </object>
+   <object id="106" type="enemy" x="6620" y="508">
+    <point/>
+   </object>
+   <object id="107" type="enemy" x="6628" y="664">
+    <point/>
+   </object>
+   <object id="109" type="enemy" x="6824" y="604">
+    <point/>
+   </object>
+   <object id="110" type="enemy" x="6664" y="764">
+    <point/>
+   </object>
+   <object id="111" type="enemy" x="6748" y="772">
+    <point/>
+   </object>
+   <object id="112" type="enemy" x="6956" y="760">
     <point/>
    </object>
   </objectgroup>
  </group>
- <group id="7" name="collisions">
+ <group id="7" name="collisions" locked="1">
   <objectgroup id="4" name="shoreCollisions">
-   <object id="1" type="collision" x="0" y="0" width="3200" height="83"/>
-   <object id="2" type="collision" x="0" y="822.5" width="3200" height="83"/>
+   <object id="1" type="collision" x="0" y="0" width="10000" height="83"/>
+   <object id="2" type="collision" x="0" y="822.5" width="10000" height="83"/>
   </objectgroup>
  </group>
 </map>

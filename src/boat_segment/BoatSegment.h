@@ -56,6 +56,7 @@ private:
 
     void loadLayer(tmx::Layer& layer);
     void loadCollision(const tmx::Object& obj);
+    shared_ptr<sf::Texture> autoloadTexture(std::string path);
 
 public:
     /// Ajoute une fixture correspondant à l'objet donné (ie même forme) au rigidbody 'body'

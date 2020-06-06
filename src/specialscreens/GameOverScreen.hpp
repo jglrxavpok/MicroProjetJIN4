@@ -4,7 +4,7 @@
 #pragma once
 #include "GameplaySegment.h"
 #include "Game.h"
-#include "elements/FixedBackground.h"
+#include "boat_segment/elements/FixedBackground.h"
 
 template<class SegmentToRetry>
 class GameOverScreen: public GameplaySegment {

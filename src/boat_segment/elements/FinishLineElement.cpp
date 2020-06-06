@@ -1,0 +1,17 @@
+//
+// Created by jglrxavpok on 05/06/2020.
+//
+
+#include "FinishLineElement.h"
+#include "BoatElement.h"
+#include "boat_segment/BoatSegment.h"
+#include <iostream>
+
+FinishLineElement::FinishLineElement(const tmx::Object &source): CollisionElement(source) {}
+
+void FinishLineElement::beginContact(SceneElement *other) {
+    if(auto* player = dynamic_cast<BoatElement*>(other)) {
+        // TODO: next gameplay segment
+        cout << "next gameplay!!" << endl;
+    }
+}

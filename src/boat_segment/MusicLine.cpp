@@ -2,7 +2,7 @@
 // Created by jglrxavpok on 30/05/2020.
 //
 
-#include <elements/MusicLineElement.h>
+#include "boat_segment/elements/MusicLineElement.h"
 #include "MusicLine.h"
 #include "math_help.h"
 #include <queue>

@@ -14,6 +14,7 @@ private:
 
 public:
     explicit DecorationElement(std::shared_ptr<sf::Texture> texture, float x, float y);
+    explicit DecorationElement(std::shared_ptr<sf::Texture> texture, float x, float y, float w, float h);
 
     void update(float elapsedTime) override;
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <SFML/Graphics.hpp>
-#include "elements/SceneElement.h"
+#include "boat_segment/elements/SceneElement.h"
 #include <box2d/box2d.h>
 
 using namespace std;

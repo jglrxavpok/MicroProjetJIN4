@@ -7,6 +7,7 @@
 #include "elements/MusicLineElement.h"
 #include "elements/FinishLineElement.h"
 #include "elements/DecorationElement.h"
+#include "elements/CollisionElement.h"
 #include "BoatSegment.h"
 #include <tmxlite/Map.hpp>
 #include <tmxlite/LayerGroup.hpp>
@@ -51,20 +52,23 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
         auto& objects = layer.getLayerAs<tmx::ObjectGroup>();
         for(auto& object : objects.getObjects()) {
             const string& type = object.getType();
-            if(type == "collision") {
+            if(object.getTileID() != 0) { // décoration
+                // TODO: sélection des images
+                auto texture = autoloadTexture("resources/textures/tmp.png");
+                scene->addElement(make_unique<DecorationElement>(texture, object.getAABB().left, object.getAABB().top-object.getAABB().height, object.getAABB().width, object.getAABB().height));
+            } else if(type == "collision") { // collision du niveau
                 loadCollision(object);
-            } else if(type == "enemy") {
+            } else if(type == "enemy") { // point de spawn d'un ennemi
                 auto enemy = make_unique<EnemyElement>(renderTarget, badGuyTexture);
                 enemy->getPosition().x = object.getPosition().x;
                 enemy->getPosition().y = object.getPosition().y;
                 scene->addElement(move(enemy));
-            } else if(type == "finishLine") {
+            } else if(type == "finishLine") { // ligne d'arrivée
                 finishLineX = object.getPosition().x;
                 scene->addElement(make_unique<FinishLineElement>(object));
-            } else {
-                throw std::runtime_error("Unknown object type: "+type+". (if empty none was given)");
+            } else { // on sait pas, on ajoute la collision au cas où
+                scene->addElement(make_unique<CollisionElement>(object));
             }
-            // TODO: obstacles, finish line, etc.
         }
     } else if(layer.getType() == tmx::Layer::Type::Group) {
         auto& group = layer.getLayerAs<tmx::LayerGroup>();
@@ -74,13 +78,8 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
     } else if(layer.getType() == tmx::Layer::Type::Image) {
         auto& image = layer.getLayerAs<tmx::ImageLayer>();
         std::string texturePath = tmx::resolveFilePath(image.getImagePath(), "");
-        auto it = autoloadedTextures.find(texturePath);
-
-        if(it == autoloadedTextures.end()) { // pas encore chargé
-            autoloadedTextures[texturePath] = Game::loadTexture(texturePath);
-        }
-
-        scene->addElement(make_unique<DecorationElement>(autoloadedTextures[texturePath], image.getOffset().x, image.getOffset().y));
+        auto texture = autoloadTexture(texturePath);
+        scene->addElement(make_unique<DecorationElement>(texture, image.getOffset().x, image.getOffset().y));
     }
 }
 
@@ -235,4 +234,14 @@ void BoatSegment::shutdown() {
 
 BoatSegment::~BoatSegment() {
     scene->getPhysicsWorld().DestroyBody(levelCollisions);
+}
+
+shared_ptr<sf::Texture> BoatSegment::autoloadTexture(std::string texturePath) {
+    auto it = autoloadedTextures.find(texturePath);
+
+    if(it == autoloadedTextures.end()) { // pas encore chargé
+        autoloadedTextures[texturePath] = Game::loadTexture(texturePath);
+    }
+
+    return autoloadedTextures[texturePath];
 }

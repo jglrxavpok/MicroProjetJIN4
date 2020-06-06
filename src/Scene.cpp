@@ -2,8 +2,8 @@
 // Created by jglrxavpok on 28/05/2020.
 //
 
-#include <elements/LoopingBackground.h>
-#include <elements/BoatElement.h>
+#include "boat_segment/elements/SceneElement.h"
+#include "boat_segment/elements/BoatElement.h"
 #include <functional>
 #include "Scene.h"
 

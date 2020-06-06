@@ -40,6 +40,12 @@ private:
     /// sprites utilisés pour la décoration du niveau (présents sur les image layers)
     std::vector<sf::Sprite> levelDecorations;
 
+    // UI
+    std::shared_ptr<sf::Texture> finishLineUITexture;
+    std::shared_ptr<sf::Texture> boatProgressUITexture;
+    sf::Sprite finishLineSprite;
+    sf::Sprite boatProgressSprite;
+
     constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
 
     float finishLineX = 0.0f;

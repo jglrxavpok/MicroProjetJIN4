@@ -19,6 +19,11 @@ BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     badGuyTexture = Game::loadTexture("resources/textures/bad_guy.png");
     singleNotesTexture = Game::loadTexture("resources/textures/single_notes_spritesheet.png");
     doubleNotesTexture = Game::loadTexture("resources/textures/double_notes_spritesheet.png");
+    finishLineUITexture = Game::loadTexture("resources/textures/ui_finish_line.png");
+    boatProgressUITexture = Game::loadTexture("resources/textures/ui_boat.png");
+
+    finishLineSprite.setTexture(*finishLineUITexture);
+    boatProgressSprite.setTexture(*boatProgressUITexture);
 
     unique_ptr<SceneElement> background = make_unique<LoopingBackground>(Game::loadTexture("resources/textures/boat_background.png"));
     scene = make_unique<Scene>(move(background));
@@ -26,6 +31,7 @@ BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     hurtSoundBuffer = Game::loadBuffer("resources/sounds/hurt.wav");
     lineBreakSoundBuffer = Game::loadBuffer("resources/sounds/line_break.wav");
     lineKillsSoundBuffer = Game::loadBuffer("resources/sounds/line_cycle.wav");
+
     scene->addElement(make_unique<BoatElement>(state, Game::loadSound(hurtSoundBuffer)));
 
     tmx::Map map;
@@ -140,8 +146,17 @@ void BoatSegment::renderProgressBar() {
     background.setPosition(view.getSize().x/2.0f - background.getSize().x/2.0f, view.getSize().y-background.getSize().y-20.0f);
     background.setFillColor(sf::Color(38,38,38,255));
 
-    // TODO: Render finish line & boat position
+    finishLineSprite.setPosition(background.getPosition().x+background.getSize().x-finishLineUITexture->getSize().x, background.getPosition().y);
+
+    float progress = scene->getPlayer().getPosition().x / finishLineX;
+    float playerX = progress * background.getSize().x + background.getPosition().x;
+    // centré verticalement sur background
+    float playerY = background.getPosition().y + background.getSize().y / 2.0f - boatProgressUITexture->getSize().y / 2.0f;
+    boatProgressSprite.setPosition(playerX, playerY);
+
     renderTarget.draw(background);
+    renderTarget.draw(finishLineSprite);
+    renderTarget.draw(boatProgressSprite);
 }
 
 void BoatSegment::renderHealthBar() {

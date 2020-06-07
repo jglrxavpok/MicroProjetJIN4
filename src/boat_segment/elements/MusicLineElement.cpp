@@ -66,7 +66,7 @@ void MusicLineElement::update(float elapsedTime) {
     }
 }
 
-void MusicLineElement::render(sf::RenderWindow &target, float partialTick) {
+void MusicLineElement::render(sf::RenderTarget &target, float partialTick) {
     int alpha = 255 * (life/MAX_LIFETIME);
 
     if(spritesheet) {

@@ -13,11 +13,11 @@ private:
     std::shared_ptr<sf::Texture> texture; // permet de garder la texture chargée tant qu'au moins cet élément l'utilise
     sf::Sprite sprite;
 
-    void updateScale(sf::RenderWindow& target, sf::Sprite& sprite);
+    void updateScale(sf::RenderTarget& target, sf::Sprite& sprite);
 
 public:
     explicit FixedBackground(std::shared_ptr<sf::Texture> texture);
     void update(float elapsedTime) override;
 
-    void render(sf::RenderWindow &target, float partialTick) override;
+    void render(sf::RenderTarget &target, float partialTick) override;
 };

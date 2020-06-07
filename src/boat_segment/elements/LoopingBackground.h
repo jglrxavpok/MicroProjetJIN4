@@ -14,11 +14,11 @@ private:
     sf::Sprite spriteLeft;
     sf::Sprite spriteRight;
 
-    void updateScale(sf::RenderWindow& target, sf::Sprite& sprite);
+    void updateScale(sf::RenderTarget& target, sf::Sprite& sprite);
 
 public:
     explicit LoopingBackground(std::shared_ptr<sf::Texture> texture);
     void update(float elapsedTime) override;
 
-    void render(sf::RenderWindow &target, float partialTick) override;
+    void render(sf::RenderTarget &target, float partialTick) override;
 };

@@ -11,7 +11,7 @@ Scene::Scene(unique_ptr<SceneElement> backgroundElement): background(move(backgr
     getPhysicsWorld().SetContactListener(this);
 }
 
-void Scene::renderAll(sf::RenderWindow &target, float partialTick) {
+void Scene::renderAll(sf::RenderTarget &target, float partialTick) {
     auto& defaultView = target.getDefaultView();
     // le fond n'est pas affecté par la vue
     if(background) {

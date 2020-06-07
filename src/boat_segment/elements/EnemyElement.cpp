@@ -39,7 +39,7 @@ void EnemyElement::update(float elapsedTime) {
     }
 }
 
-void EnemyElement::render(sf::RenderWindow &target, float partialTick) {
+void EnemyElement::render(sf::RenderTarget &target, float partialTick) {
     sprite.setPosition(position.x-sprite.getTexture()->getSize().x/2.0f, position.y-sprite.getTexture()->getSize().y/2.0f);
     target.draw(sprite);
 }

@@ -18,7 +18,7 @@ public:
 
     virtual void onAddition(Scene& scene) {};
     virtual void update(float elapsedTime) = 0;
-    virtual void render(sf::RenderWindow& target, float partialTick) = 0;
+    virtual void render(sf::RenderTarget &target, float partialTick) = 0;
     virtual ~SceneElement() = default;
 
     void scheduleForRemoval();

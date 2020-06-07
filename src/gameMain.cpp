@@ -7,6 +7,7 @@
 #include <iostream>
 #include "boat_segment/BoatSegment.h"
 #include "boat_segment/MusicSegment.h"
+#include "specialscreens/TransitionScreen.hpp"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ int gameMain()
     // TODO: Ecran de chargement
 
     Game game{window};
-    game.setGameplay(move(make_unique<BoatSegment>(game)));
+    game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, L"Testé")));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

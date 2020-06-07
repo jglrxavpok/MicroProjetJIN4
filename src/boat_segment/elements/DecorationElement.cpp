@@ -14,6 +14,6 @@ DecorationElement::DecorationElement(std::shared_ptr<sf::Texture> texture, float
     sprite.setScale(w/texture->getSize().x, h/texture->getSize().y);
 }
 
-void DecorationElement::render(sf::RenderWindow &target, float partialTick) {
+void DecorationElement::render(sf::RenderTarget &target, float partialTick) {
     target.draw(sprite);
 }

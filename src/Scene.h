@@ -43,7 +43,7 @@ public:
     explicit Scene(unique_ptr<SceneElement> background);
 
     void addElement(unique_ptr<SceneElement>&& element);
-    void renderAll(sf::RenderWindow& target, float partialTick);
+    void renderAll(sf::RenderTarget& target, float partialTick);
     void updateAll(float elapsedTime);
 
     b2World& getPhysicsWorld();

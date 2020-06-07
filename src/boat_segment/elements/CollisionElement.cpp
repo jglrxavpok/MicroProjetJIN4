@@ -23,7 +23,7 @@ void CollisionElement::update(float elapsedTime) {
 
 }
 
-void CollisionElement::render(sf::RenderWindow &target, float partialTick) {
+void CollisionElement::render(sf::RenderTarget &target, float partialTick) {
 
 }
 

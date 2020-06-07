@@ -23,7 +23,7 @@ public:
 
     void update(float elapsedTime) override;
 
-    void render(sf::RenderWindow &target, float partialTick) override;
+    void render(sf::RenderTarget &target, float partialTick) override;
 
     void beginContact(SceneElement *other) override;
 

@@ -56,18 +56,18 @@ void MusicLineElement::onAddition(Scene &scene) {
 
 void MusicLineElement::update(float elapsedTime) {
     life -= elapsedTime;
-    if(life <= 0) {
+    if(part && life <= 0) {
         scheduleForRemoval();
         return;
     }
 
-    if(part->isBroken()) {
+    if(part && part->isBroken()) {
         breakPart();
     }
 }
 
 void MusicLineElement::render(sf::RenderTarget &target, float partialTick) {
-    int alpha = 255 * (life/MAX_LIFETIME);
+    int alpha = part ? 255 * (life/MAX_LIFETIME) : 255;
 
     if(spritesheet) {
         float animationSpeed = 0.1f;

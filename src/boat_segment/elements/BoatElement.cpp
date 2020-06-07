@@ -82,7 +82,7 @@ void BoatElement::update(float elapsedTime) {
     }
 }
 
-void BoatElement::render(sf::RenderWindow &target, float partialTick) {
+void BoatElement::render(sf::RenderTarget &target, float partialTick) {
     if(rigidbody) {
         squarePart.setPosition(position.x, position.y);
         squarePart.setRotation(angle/M_PI*180.0f);

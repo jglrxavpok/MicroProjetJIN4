@@ -19,3 +19,11 @@ bool GameState::isGameOver() {
 void GameState::damage(float amount) {
     playerLife -= amount;
 }
+
+bool GameState::isWon() {
+    return won;
+}
+
+void GameState::win() {
+    won = true;
+}

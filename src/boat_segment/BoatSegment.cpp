@@ -14,7 +14,9 @@
 #include <tmxlite/ObjectGroup.hpp>
 #include <tmxlite/ImageLayer.hpp>
 #include <tmxlite/FreeFuncs.hpp>
+#include "specialscreens/TransitionScreen.hpp"
 #include "specialscreens/GameOverScreen.hpp"
+#include "specialscreens/VictoryScreen.h"
 
 BoatSegment::BoatSegment(Game& game): GameplaySegment(game) {
     badGuyTexture = Game::loadTexture("resources/textures/bad_guy.png");
@@ -65,7 +67,7 @@ void BoatSegment::loadLayer(tmx::Layer &layer) {
                 scene->addElement(move(enemy));
             } else if(type == "finishLine") { // ligne d'arrivée
                 finishLineX = object.getPosition().x;
-                scene->addElement(make_unique<FinishLineElement>(object));
+                scene->addElement(make_unique<FinishLineElement>(object, state));
             } else { // on sait pas, on ajoute la collision au cas où
                 scene->addElement(make_unique<CollisionElement>(object));
             }
@@ -123,6 +125,11 @@ b2Fixture * BoatSegment::createFixture(b2Body *body, const tmx::Object &obj) {
 void BoatSegment::update() {
     if(state.isGameOver()) {
         game.setGameplay(make_unique<GameOverScreen<BoatSegment>>(game));
+        return;
+    }
+    if(state.isWon()) {
+        vector<wstring> text = {L"C'est la fin du jeu.", L"On espère que ça vous a plu.", L"", L"L'écran de fin est juste après."};
+        game.setGameplay(move(make_unique<TransitionScreen<VictoryScreen>>(game, text)));
         return;
     }
 

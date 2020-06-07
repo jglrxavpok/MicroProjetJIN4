@@ -33,6 +33,7 @@ private:
 
 public:
     constexpr static float MAX_LIFETIME = 5.0f; // 5s
+
     explicit MusicLineElement(std::shared_ptr<MusicLine> parent, std::shared_ptr<MusicLinePart> part, float startX, float startY, float endX, float endY, std::shared_ptr<sf::Texture> = nullptr);
 
     void update(float elapsedTime) override;

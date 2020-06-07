@@ -6,8 +6,9 @@
 
 class GameState {
 private:
-    float playerLife;
-    float maxPlayerLife;
+    float playerLife = 0.0f;
+    float maxPlayerLife = 0.0f;
+    bool won = false;
 
 public:
     explicit GameState(float maxPlayerLife);
@@ -15,4 +16,7 @@ public:
     float getLifeRatio();
     bool isGameOver();
     void damage(float amount);
+    void win();
+    bool isWon();
+
 };

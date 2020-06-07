@@ -8,6 +8,7 @@
 #include "boat_segment/BoatSegment.h"
 #include "boat_segment/MusicSegment.h"
 #include "specialscreens/TransitionScreen.hpp"
+#include "specialscreens/VictoryScreen.h"
 
 using namespace std;
 
@@ -38,7 +39,9 @@ int gameMain()
     // TODO: Ecran de chargement
 
     Game game{window};
-    game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, L"Testé")));
+    vector<wstring> text = {L"Orphée descend aux enfers.", L"Il commence par charmer Cerbère", L"et le passeur avec sa musique."};
+    //game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, text)));
+    game.setGameplay(move(make_unique<VictoryScreen>(game)));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

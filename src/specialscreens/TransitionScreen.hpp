@@ -10,6 +10,12 @@
 
 template<class NextSegment>
 class TransitionScreen: public GameplaySegment {
+
+    bool fontLoaded = false;
+    sf::Font defaultFont;
+    bool noShader = false;
+    bool shaderLoaded = false;
+    sf::Shader oldMovieShader;
 private:
     std::vector<std::wstring> lines;
     std::vector<sf::Text> linesToRender;
@@ -31,11 +37,7 @@ public:
     void shutdown() override {}
 };
 
-static bool fontLoaded = false;
-static sf::Font defaultFont;
-static bool noShader = false;
-static bool shaderLoaded = false;
-static sf::Shader oldMovieShader;
+
 
 template<class NextSegment>
 TransitionScreen<NextSegment>::TransitionScreen(Game &game, std::vector<std::wstring> lines, int characterSize): GameplaySegment(game), lines(std::move(lines)) {

@@ -4,6 +4,8 @@
 
 #include "MusicSegment.h"
 #include "specialscreens/GameOverScreen.hpp"
+#include <specialscreens\TransitionScreen.hpp>
+#include <boat_segment\BoatSegment.h>
 
 MusicSegment::MusicSegment(Game& game): GameplaySegment(game) {
     for (auto& note : names) {
@@ -21,6 +23,13 @@ MusicSegment::MusicSegment(Game& game): GameplaySegment(game) {
         livesSprites[k]->setScale(sf::Vector2f(0.3f, 0.3f));
         livesSprites[k]->setPosition(sf::Vector2f(500+k*200, 600));
     }
+
+    font.loadFromFile("resources/fonts/segoeprb.ttf");
+    pourcentagePrint.setString(((char*)pourcentage));
+    pourcentagePrint.setPosition(sf::Vector2f(900, 100));
+    pourcentagePrint.setColor(sf::Color::Cyan);
+    pourcentagePrint.setCharacterSize(30);
+    pourcentagePrint.setFont(font);
 }
 
 void MusicSegment::playSound(std::string note) {
@@ -81,8 +90,14 @@ void MusicSegment::playMusic() {
             }
             lastPressKey = notes[music[notePlay]];
             lastPressKey->setState(keyState::blinking);
+            pourcentage = notePlay / music.size();
             notePlay++;
         }
+    }
+    if (!gameOver && notePlay == music.size() && win == 0) {
+        win = 1;
+        vector<wstring> text = { L"Orphée a réussi à charmer le Passeur et Cerbère.", L"Il arpente ensuite le Styx pour rejoindre sa bien-aimée." };
+        game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, text)));
     }
 }
 
@@ -96,6 +111,8 @@ void MusicSegment::render(sf::RenderWindow& renderTarget, float partialTick) {
     for (int lifeSprite = 0; lifeSprite < NBLIFE; lifeSprite++) {
         renderTarget.draw(*livesSprites[lifeSprite]);
     }
+    pourcentagePrint.setString(((char*)pourcentage));
+    renderTarget.draw(pourcentagePrint);
 }
 
 void MusicSegment::keyPressed(sf::Event::KeyEvent event) {

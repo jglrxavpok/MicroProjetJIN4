@@ -49,6 +49,10 @@ private:
     int lives = NBLIFE;
     int gameOver = 0;
     int playerPlayed = 1;
+    int win = 0;
+    int pourcentage = 0;
+    sf::Font font;
+    sf::Text pourcentagePrint;
 
     void hurtPlayer();
 
@@ -66,6 +70,7 @@ public:
     /// Appelé toutes les TARGET_UPDATE_PERIOD ms pour mettre à jour l'état du jeu
     void update() override;
 
+    ///Suit la partition (music ici comme il n'y a qu'une seule partition)
     void playMusic();
 
     /// Appelé autant que possible pour afficher le jeu

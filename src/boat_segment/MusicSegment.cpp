@@ -204,3 +204,4 @@ void MusicSegment::renderIncomingNotes() {
     keySprite.setPosition(0.0f, startY+height/2.0f-6.0/14.0f*height-musicKeyTexture->getSize().y/2.0f); // centré verticalement sur les lignes
     renderTarget.draw(keySprite);
 }
+

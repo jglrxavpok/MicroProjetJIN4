@@ -53,5 +53,6 @@ public:
     // Appelé lorsque la souris est déplacée avec un clic enfoncé (appelé après mouseMoved)
     virtual void mouseDrag(int x, int y, int dx, int dy, sf::Mouse::Button button) {}
 
+    virtual ~GameplaySegment() = default;
 };
 

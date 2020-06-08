@@ -42,7 +42,6 @@ public:
 	/// Affiche la note seule, utilisé pour afficher la progression dans la musique
 	void renderSingle(sf::RenderTarget& renderTarget, float x, float y);
 
-	~Sound() = default;
 };
 
 

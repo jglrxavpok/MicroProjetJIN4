@@ -22,6 +22,7 @@ void Game::shutdown() {
     if(currentSegment) {
         currentSegment->shutdown();
     }
+    currentSegment = nullptr;
 }
 
 sf::RenderWindow& Game::getRenderTarget() {
@@ -108,5 +109,8 @@ void Game::mouseMoved(int x, int y) {
 }
 
 void Game::setGameplay(unique_ptr<GameplaySegment> gameplay) {
+    if(currentSegment) {
+        currentSegment = nullptr;
+    }
     currentSegment = move(gameplay);
 }

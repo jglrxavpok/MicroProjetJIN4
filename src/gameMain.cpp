@@ -29,6 +29,7 @@ int gameMain()
     setenv("DISPLAY", "127.0.0.1:0", true);
 #endif
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Micro Projet JIN4", sf::Style::Close);
+    window.setKeyRepeatEnabled(false); // rend le jeu de rythme plus juste
 
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = "resources/imgui.ini";
@@ -40,8 +41,7 @@ int gameMain()
 
     Game game{window};
     vector<wstring> text = {L"Orphée descend aux enfers.", L"Il commence par charmer Cerbère", L"et le passeur avec sa musique."};
-    //game.setGameplay(move(make_unique<TransitionScreen<MusicSegment>>(game, text)));
-    game.setGameplay(move(make_unique<MusicSegment>(game)));
+    game.setGameplay(move(make_unique<TransitionScreen<MusicSegment>>(game, text)));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

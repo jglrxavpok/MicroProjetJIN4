@@ -8,6 +8,7 @@ Sound::Sound(std::string note) {
     successKeyImage = Game::loadTexture("resources/success"+note+".png");
     wrongKeyImage = Game::loadTexture("resources/wrong"+note+".png");
     pressKeyImage = Game::loadTexture("resources/press"+note+".png");
+    singleImage = Game::loadTexture("resources/textures/note_"+note+".png");
 
     state = keyState::nothing;
 }
@@ -49,4 +50,10 @@ void Sound::setState(keyState state) {
 
 keyState Sound::getState() {
     return state;
+}
+
+void Sound::renderSingle(sf::RenderTarget &renderTarget, float x, float y) {
+    sf::Sprite sprite{*singleImage};
+    sprite.setPosition(x, y);
+    renderTarget.draw(sprite);
 }

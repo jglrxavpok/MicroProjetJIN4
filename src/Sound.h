@@ -25,6 +25,9 @@ private:
 	///Image de la touche quand le joueur doit appuyer sur cette touche
 	std::shared_ptr<sf::Texture> pressKeyImage;
 
+    ///Image de la touche utilisée pour représenter l'avancement de la musique
+    std::shared_ptr<sf::Texture> singleImage;
+
 	///Utilisé pour onPress pour faire clignoter la touche
 	int blink = 0;
 	keyState state;
@@ -35,6 +38,9 @@ public:
 	void render(sf::RenderWindow& renderTarget, float partialTick, sf::Sprite& keySprite, std::shared_ptr<sf::Texture> noKeyImage);
 	void setState(keyState state);
 	keyState getState();
+
+	/// Affiche la note seule, utilisé pour afficher la progression dans la musique
+	void renderSingle(sf::RenderTarget& renderTarget, float x, float y);
 
 	~Sound() = default;
 };

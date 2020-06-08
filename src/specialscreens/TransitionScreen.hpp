@@ -11,15 +11,14 @@
 template<class NextSegment>
 class TransitionScreen: public GameplaySegment {
 
-    bool fontLoaded = false;
-    sf::Font defaultFont;
-    bool noShader = false;
-    bool shaderLoaded = false;
-    sf::Shader oldMovieShader;
 private:
     std::vector<std::wstring> lines;
     std::vector<sf::Text> linesToRender;
     sf::RenderTexture renderTexture;
+    sf::Font defaultFont;
+    bool noShader = false;
+    sf::Shader oldMovieShader;
+
 
     void renderContents(sf::RenderTarget& target, float partialTick);
 
@@ -38,25 +37,18 @@ public:
 };
 
 
-
 template<class NextSegment>
 TransitionScreen<NextSegment>::TransitionScreen(Game &game, std::vector<std::wstring> lines, int characterSize): GameplaySegment(game), lines(std::move(lines)) {
-    if(!fontLoaded) {
-        if(!defaultFont.loadFromFile("resources/fonts/segoeprb.ttf")) {
-            cerr << "Failed to load font!" << endl;
-        }
-        fontLoaded = true;
+    if(!defaultFont.loadFromFile("resources/fonts/segoeprb.ttf")) {
+        cerr << "Failed to load font!" << endl;
     }
-    if(!shaderLoaded && !noShader) {
-        if(!sf::Shader::isAvailable()) {
-            cerr << "Shaders non disponibles sur cette machine. Tant pis." << endl;
+    if(!sf::Shader::isAvailable()) {
+        cerr << "Shaders non disponibles sur cette machine. Tant pis." << endl;
+        noShader = true;
+    } else {
+        if(!oldMovieShader.loadFromFile("resources/shaders/old_movie.frag", sf::Shader::Fragment)) {
+            cerr << "Echec du chargement du shader, tant pis." << endl;
             noShader = true;
-        } else {
-            if(!oldMovieShader.loadFromFile("resources/shaders/old_movie.frag", sf::Shader::Fragment)) {
-                cerr << "Echec du chargement du shader, tant pis." << endl;
-                noShader = true;
-            }
-            shaderLoaded = true;
         }
     }
     if(!renderTexture.create(1600,900)) {

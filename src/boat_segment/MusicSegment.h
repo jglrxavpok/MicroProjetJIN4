@@ -20,7 +20,7 @@ public:
     std::shared_ptr<sf::Texture> noKeyImage = Game::loadTexture("resources/no_key.png");
 
 private:
-    std::vector<std::string> names = { "A", "B", "C", "D", "E", "F", "G" };
+    std::vector<std::string> names = { "B", "A", "G", "F", "E", "D", "C" };
 
     ///Musique 1
     std::vector<std::string> music{ "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G", "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G" };
@@ -37,6 +37,9 @@ private:
     std::shared_ptr<sf::Texture> beatingHeart = Game::loadTexture("resources/beating_heart.png");
     std::shared_ptr<sf::Texture> heart = Game::loadTexture("resources/heart.png");
     std::shared_ptr<sf::Texture> deadHeart = Game::loadTexture("resources/dead_heart.png");
+
+    // Texture de la clé de la partition
+    std::shared_ptr<sf::Texture> musicKeyTexture = Game::loadTexture("resources/textures/music_key.png");
 
     ///Sprite pour les vies
     std::vector<unique_ptr<sf::Sprite>> livesSprites;
@@ -55,6 +58,7 @@ private:
     sf::Text pourcentagePrint;
 
     void hurtPlayer();
+    void renderIncomingNotes();
 
 public:
     ///initialisation chargement des textures

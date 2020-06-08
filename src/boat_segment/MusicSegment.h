@@ -11,6 +11,9 @@
 #include "GameplaySegment.h"
 #include "Game.h"
 
+#define TEMPO 70
+#define NBLIFE 3
+
 class MusicSegment: public GameplaySegment {
 public:
     ///Pour rien afficher sur le clavier utiliser cette texture pour le sprite "keySprite"
@@ -20,7 +23,7 @@ private:
     std::vector<std::string> names = { "A", "B", "C", "D", "E", "F", "G" };
 
     ///Musique 1
-    ///std::vector<Sound> music{ Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G, Sound::G, Sound::A, Sound::B, Sound::G, Sound::G, Sound::F, Sound::E, Sound::C, Sound::D, Sound::E, Sound::F, Sound::E, Sound::F, Sound::G, Sound::G, Sound::F, Sound::E, Sound::D, Sound::E, Sound::F, Sound::D, Sound::E, Sound::C, Sound::E, Sound::G };
+    std::vector<std::string> music{ "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G", "G", "A", "B", "G", "G", "F", "E", "C", "D", "E", "F", "E", "F", "G", "G", "F", "E", "D", "E", "F", "D", "E", "C", "E", "G" };
 
     ///Image de fond du clavier dans sa globalité
     std::shared_ptr<sf::Texture> keyboardImage;
@@ -30,14 +33,35 @@ private:
     ///Dernière image de note utilisée
     std::shared_ptr<Sound> lastPressKey;
 
+    ///Texture des vies
+    std::shared_ptr<sf::Texture> beatingHeart = Game::loadTexture("resources/beating_heart.png");
+    std::shared_ptr<sf::Texture> heart = Game::loadTexture("resources/heart.png");
+    std::shared_ptr<sf::Texture> deadHeart = Game::loadTexture("resources/dead_heart.png");
+
+    ///Sprite pour les vies
+    std::vector<unique_ptr<sf::Sprite>> livesSprites;
+
+
     sf::Sprite keySprite;
     sf::Sprite keyBoardSprite;
+    int notePlay = 0;
+    int ticks = 0;
+    int lives = NBLIFE;
+    int gameOver = 0;
+    int playerPlayed = 1;
+
+    void hurtPlayer();
 
 public:
     ///initialisation chargement des textures
     explicit MusicSegment(Game& game);
 
+    ///Joue la note appuyée
     void playSound(std::string note);
+
+    ///regarde si la note jouée est la bonne, met lastPressKey à cette note et set state de note
+    void checkNote(std::string note);
+
 
     /// Appelé toutes les TARGET_UPDATE_PERIOD ms pour mettre à jour l'état du jeu
     void update() override;

@@ -40,8 +40,7 @@ int gameMain()
 
     Game game{window};
     vector<wstring> text = {L"Orphée descend aux enfers.", L"Il commence par charmer Cerbère", L"et le passeur avec sa musique."};
-    //game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, text)));
-    game.setGameplay(move(make_unique<VictoryScreen>(game)));
+    game.setGameplay(move(make_unique<TransitionScreen<MusicSegment>>(game, text)));
 
     while(window.isOpen()) {
         sf::Time dt = deltaClock.restart();

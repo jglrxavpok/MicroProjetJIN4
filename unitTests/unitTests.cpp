@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <elements/MusicLineElement.h>
-#include <elements/EnemyElement.h>
+#include <boat_segment/elements/MusicLineElement.h>
+#include <boat_segment/elements/EnemyElement.h>
 #include "Scene.h"
 #include "boat_segment/MusicLine.h"
 

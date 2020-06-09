@@ -205,3 +205,7 @@ void MusicSegment::renderIncomingNotes() {
     renderTarget.draw(keySprite);
 }
 
+int MusicSegment::getLives() {
+    return lives;
+}
+

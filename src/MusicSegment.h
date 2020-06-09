@@ -86,4 +86,7 @@ public:
     void keyPressed(sf::Event::KeyEvent event) override;
 
     void shutdown() override;
+
+    ///Pour les tests
+    int getLives();
 };

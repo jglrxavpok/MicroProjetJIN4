@@ -6,7 +6,7 @@
 #include <box2d/b2_body.h>
 #include <iostream>
 #include "boat_segment/BoatSegment.h"
-#include "boat_segment/MusicSegment.h"
+#include "MusicSegment.h"
 #include "specialscreens/TransitionScreen.hpp"
 #include "specialscreens/VictoryScreen.h"
 

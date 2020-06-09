@@ -39,5 +39,9 @@ endif()
 enable_testing()
 add_executable(unitTests unitTests.cpp)
 target_link_libraries(unitTests gtest_main)
-target_link_libraries(unitTests src pugixml)
+target_link_libraries(unitTests src tmxlite imgui-sfml pugixml sfml-graphics sfml-audio sfml-system box2d)
+
+file(GLOB_RECURSE DYNAMIC_LIBS CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/lib/${ARCH}/*.dll)
+file(COPY ${DYNAMIC_LIBS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_test(NAME that-test-I-made COMMAND unitTests)

@@ -3,8 +3,8 @@
 #include <boat_segment/elements/EnemyElement.h>
 #include "Scene.h"
 #include "boat_segment/MusicLine.h"
-
 #include "MusicSegment.h"
+#include "Game.h"
 
 #define M_PI 3.1415926535
 
@@ -95,12 +95,12 @@ namespace myNameSpace {
     }
 
     TEST(TestLoosingLife, NotPlaying) {
-        /*sf::RenderWindow window;
+        sf::RenderWindow window;
         Game game(window);
         auto musicSegment = make_unique<MusicSegment>(game);
         for (int k = 0; k < TEMPO; k++) {
             musicSegment->update();
         }
-        ASSERT_EQ(NBLIFE - 1, musicSegment->getLives());*/
+        ASSERT_EQ(NBLIFE - 1, musicSegment->getLives());
     }
 }

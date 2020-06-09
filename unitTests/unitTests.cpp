@@ -6,6 +6,9 @@
 #include "MusicSegment.h"
 #include "Game.h"
 
+#include <windows.h>
+
+
 #define M_PI 3.1415926535
 
 namespace myNameSpace {
@@ -98,9 +101,48 @@ namespace myNameSpace {
         sf::RenderWindow window;
         Game game(window);
         auto musicSegment = make_unique<MusicSegment>(game);
+        ///Boucle qui laisse le temps au joueur de comprendre ce qui lui arrive dans musicSegment
+        for (int k = 0; k <= TEMPO; k++) {
+            musicSegment->update();
+        }
+        ///Vrai boucle de démarrage
         for (int k = 0; k < TEMPO; k++) {
             musicSegment->update();
         }
         ASSERT_EQ(NBLIFE - 1, musicSegment->getLives());
+    }
+
+    TEST(TestLoosingLife, WrongKey) {
+        sf::RenderWindow window;
+        Game game(window);
+        auto musicSegment = make_unique<MusicSegment>(game);
+
+        sf::Event::KeyEvent event;
+        sf::Keyboard::Key key = sf::Keyboard::Key::A;
+
+        event.code = key;
+        musicSegment->keyPressed(event);
+        ASSERT_EQ(NBLIFE - 1, musicSegment->getLives());
+    }
+
+    TEST(TestLoosingLife, RightKey) {
+        sf::RenderWindow window;
+        Game game(window);
+        auto musicSegment = make_unique<MusicSegment>(game);
+        ///Boucle qui laisse le temps au joueur de comprendre ce qui lui arrive dans musicSegment
+        for (int k = 0; k <= TEMPO; k++) {
+            musicSegment->update();
+        }
+
+        sf::Event::KeyEvent event;
+        sf::Keyboard::Key key = sf::Keyboard::Key::G;
+        event.code = key;
+        musicSegment->keyPressed(event);
+
+        ///Vrai boucle de démarrage
+        for (int k = 0; k < TEMPO; k++) {
+            musicSegment->update();
+        }
+        ASSERT_EQ(NBLIFE, musicSegment->getLives());
     }
 }

@@ -56,8 +56,9 @@ void MusicSegment::update() {
         return;
     }
 
-    ticks++;
     this->playMusic();
+
+    ticks++;
     if (ticks % TEMPO > TEMPO / 10) {
         for (int life = 0; life < lives; life++) {
             livesSprites[life]->setTexture(*heart);
@@ -71,7 +72,7 @@ void MusicSegment::update() {
 }
 
 void MusicSegment::playMusic() {
-    if (notePlay != ticks / TEMPO && notePlay < music.size()) {
+    if (ticks / TEMPO != 0 && ticks % TEMPO == 0 && notePlay < music.size()) {
         if (!playerPlayed) {
             hurtPlayer();
         }
@@ -146,6 +147,7 @@ void MusicSegment::keyPressed(sf::Event::KeyEvent event) {
 
 void MusicSegment::hurtPlayer() {
     lives--;
+    std::cout << "aie" << std::endl;
     if(lives >= 0) {
         livesSprites[lives]->setTexture(*deadHeart);
     }

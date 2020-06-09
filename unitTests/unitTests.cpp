@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "boat_segment/MusicLine.h"
 
+#include "MusicSegment.h"
+
 #define M_PI 3.1415926535
 
 namespace myNameSpace {
@@ -90,5 +92,15 @@ namespace myNameSpace {
         ASSERT_EQ(1, line->countParts());
         scene->updateAll(MusicLineElement::MAX_LIFETIME / 2.0f);
         ASSERT_EQ(0, line->countParts());
+    }
+
+    TEST(TestLoosingLife, NotPlaying) {
+        /*sf::RenderWindow window;
+        Game game(window);
+        auto musicSegment = make_unique<MusicSegment>(game);
+        for (int k = 0; k < TEMPO; k++) {
+            musicSegment->update();
+        }
+        ASSERT_EQ(NBLIFE - 1, musicSegment->getLives());*/
     }
 }

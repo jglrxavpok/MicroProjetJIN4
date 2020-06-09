@@ -226,6 +226,7 @@ unique_ptr<GraphCycle> MusicLine::reconstructCycle(vertex* endPoint, vertex* sec
     assert(begin != traversed.end());
     assert(end != traversed.end());
 
+    // extraction du cycle
     for(auto it = begin; it != end; it++) {
         vertex* v = *(it);
         v->partOfCycle = true;

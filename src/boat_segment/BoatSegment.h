@@ -46,8 +46,6 @@ private:
     sf::Sprite finishLineSprite;
     sf::Sprite boatProgressSprite;
 
-    constexpr static float ENEMY_SPAWN_PERIOD = 1.0f; // en secondes
-
     float finishLineX = 0.0f;
     b2Body* levelCollisions;
 
@@ -56,6 +54,8 @@ private:
 
     void loadLayer(tmx::Layer& layer);
     void loadCollision(const tmx::Object& obj);
+
+    /// Charge une texture avec mise en cache, utilisé pour ne pas dupliquer les textures lors du chargement de la map
     shared_ptr<sf::Texture> autoloadTexture(std::string path);
 
 public:

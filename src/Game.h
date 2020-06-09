@@ -20,6 +20,8 @@ private:
     int mousePosY;
     bool buttonPressed[sf::Mouse::ButtonCount] = {false};
     sf::RenderWindow& renderTarget;
+
+    /// partie du jeu actuellement en train de s'exécuter
     unique_ptr<GameplaySegment> currentSegment;
 
     void updateMousePos(int x, int y);

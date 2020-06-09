@@ -68,7 +68,10 @@ private:
 
     void destroyEnemy(EnemyElement* enemy);
 
+    /// Cherches un cycle dans un graphe défini par ses sommets et arêtes
     unique_ptr<GraphCycle> findCycle(vertex* start, vector<vertex>& allVertices, adjacency_map& adjacency);
+
+    /// responsable de la reconstruction d'un cycle lorsqu'un cycle est détecté
     unique_ptr<GraphCycle> reconstructCycle(vertex *endPoint, vertex* secondParent, map<vertex *, vertex *>& parents);
 
     /// Connecte 'v' aux deux points les plus proches présents sur la ligne 'along'

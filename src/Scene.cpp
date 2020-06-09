@@ -36,6 +36,7 @@ void Scene::updateAll(float elapsedTime) {
     for(auto& element : elements) {
         element->update(elapsedTime);
     }
+    // retrait des éléments qui doivent partir (leur destructeur est automatiquement appelé à ce moment)
     elements.erase(remove_if(elements.begin(), elements.end(), [](const auto& elem) { return elem->shouldBeRemoved(); }), elements.end());
 }
 

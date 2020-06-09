@@ -17,6 +17,8 @@ private:
     sf::RenderTexture renderTexture;
     sf::Font defaultFont;
     bool noShader = false;
+
+    /// shader utilisé pour le rendu de l'écran. (cf resources/shaders/old_movie.frag)
     sf::Shader oldMovieShader;
 
 

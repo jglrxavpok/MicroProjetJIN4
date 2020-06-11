@@ -205,10 +205,7 @@ float lastX = 0;
 float lastY = 0;
 
 void BoatSegment::mousePressed(int x, int y, sf::Mouse::Button button) {
-    if(x < 500) {
-        state.damage(100.0f);
-        return;
-    }
+
     auto coords = renderTarget.mapPixelToCoords(sf::Vector2i(x, y), scene->getRenderView());
     lastX = coords.x;
     lastY = coords.y;

@@ -71,6 +71,8 @@ void MusicSegment::update() {
     }
 }
 
+bool forcewin = false;
+
 void MusicSegment::playMusic() {
     if (ticks / TEMPO != 0 && ticks % TEMPO == 0 && notePlay < music.size()) {
         if (!playerPlayed) {
@@ -88,7 +90,7 @@ void MusicSegment::playMusic() {
             notePlay++;
         }
     }
-    if (!gameOver && notePlay == music.size() && win == 0) {
+    if (!gameOver && notePlay == music.size() && win == 0 || forcewin) {
         win = 1;
         vector<wstring> text = { L"Orphée a réussi à charmer le Passeur et Cerbère.", L"Il arpente ensuite le Styx pour rejoindre sa bien-aimée." };
         game.setGameplay(move(make_unique<TransitionScreen<BoatSegment>>(game, text)));
@@ -112,6 +114,11 @@ void MusicSegment::render(sf::RenderWindow& renderTarget, float partialTick) {
 }
 
 void MusicSegment::keyPressed(sf::Event::KeyEvent event) {
+    // code de triche pour la démo
+    if(event.code == sf::Keyboard::Enter) {
+        forcewin = true;
+    }
+
     if (event.code == sf::Keyboard::A) {
         playSound("A");
         checkNote("A");
